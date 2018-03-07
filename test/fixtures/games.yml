@@ -1,0 +1,11 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  turn_number: 1
+  us_army_force: 1
+  rebels_force: 1
+
+two:
+  turn_number: 1
+  us_army_force: 1
+  rebels_force: 1

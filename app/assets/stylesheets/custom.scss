@@ -1,0 +1,25 @@
+$blue: #02044B; 
+$green: #20c997;
+
+#bootstrap-overrides {
+	.navbar {
+		background-color: $blue; 
+		a {
+			color: white;
+			&:hover {
+				color: $green;
+			}
+		}
+		.navbar-collapse {
+			justify-content: flex-end;
+		}
+		.dropdown-menu {
+			background-color: $blue;
+			.dropdown-item {
+				&:hover {
+					background-color: $blue;
+				}
+			}
+		}
+	}
+}
