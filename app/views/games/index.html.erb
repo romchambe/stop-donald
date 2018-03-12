@@ -1,6 +1,6 @@
 <ul class="button-list">
 	<li><%= link_to 'Join a random game', '#', class: 'btn btn-primary' %></li>
-	<li><%= link_to 'Create a private game', games_path, method: :post, class: 'btn btn-primary' %></li>
+	<li><%= link_to 'Create a private game', games_path(creator: current_user.id), method: :post, class: 'btn btn-primary' %></li>
 </ul>
 
 <h1>Current games</h1>
