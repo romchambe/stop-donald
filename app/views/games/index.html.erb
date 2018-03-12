@@ -1,0 +1,32 @@
+<ul class="button-list">
+	<li><%= link_to 'Join a random game', '#', class: 'btn btn-primary' %></li>
+	<li><%= link_to 'Create a private game', games_path, method: :post, class: 'btn btn-primary' %></li>
+</ul>
+
+<h1>Current games</h1>
+
+<table class="table table-hover">
+	<thead>
+		<tr>
+			<th class="center"><strong>Creator</strong></th>
+			<th class="center"><strong>Status</strong></th>
+			<th class="center"><strong>Created at</strong></th>
+			<th class="center"><strong>Options</strong></th>
+
+		</tr>
+	</thead>
+	<tbody>
+		<% Game.created_by(current_user).each do |game| %>
+			<tr>
+				<td><%= game.creator.username %></td>
+				<td>Todo</td>
+				<td><%= game.created_at %></td>
+				<td><%= link_to "Go to game", invite_friends_path(game), class: "btn btn-primary" %></td>
+			</tr>
+		<% end %>
+		
+	</tbody>
+</table>
+
+<h1>Pending invites</h1>
+

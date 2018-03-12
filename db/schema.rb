@@ -10,7 +10,29 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180307164246) do
+ActiveRecord::Schema.define(version: 20180308151039) do
+
+  create_table "delayed_jobs", force: :cascade do |t|
+    t.integer "priority", default: 0, null: false
+    t.integer "attempts", default: 0, null: false
+    t.text "handler", null: false
+    t.text "last_error"
+    t.datetime "run_at"
+    t.datetime "locked_at"
+    t.datetime "failed_at"
+    t.string "locked_by"
+    t.string "queue"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.index ["priority", "run_at"], name: "delayed_jobs_priority"
+  end
+
+  create_table "game_invites_invitees", id: false, force: :cascade do |t|
+    t.integer "game_invite_id", null: false
+    t.integer "invitee_id", null: false
+    t.index ["game_invite_id", "invitee_id"], name: "index_game_invites_invitees_on_game_invite_id_and_invitee_id"
+    t.index ["invitee_id", "game_invite_id"], name: "index_game_invites_invitees_on_invitee_id_and_game_invite_id"
+  end
 
   create_table "games", force: :cascade do |t|
     t.integer "turn_number"
@@ -18,6 +40,8 @@ ActiveRecord::Schema.define(version: 20180307164246) do
     t.integer "rebels_force"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "creator_id"
+    t.index ["creator_id"], name: "index_games_on_creator_id"
   end
 
   create_table "games_users", id: false, force: :cascade do |t|

@@ -26,11 +26,15 @@ gem 'jbuilder', '~> 2.5'
 # Secure authentication
 gem 'devise'
 gem 'bcrypt', '~> 3.1.7'
+gem 'hashids' #generate hashed ids
 
 # Styles
 gem 'bootstrap', '~> 4.0.0'
 gem "select2-rails"
 gem 'jquery-rails'
+
+# Delayed jobs => schedule tasks
+gem 'delayed_job_active_record'
 
 # ---------------------------------------------------------------------------------------------------------
 
