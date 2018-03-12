@@ -1,6 +1,6 @@
 <ul class="button-list">
-	<li><%= link_to 'Join a random game', '#', class: 'btn btn-primary' %></li>
-	<li><%= link_to 'Create a private game', games_path(creator: current_user.id), method: :post, class: 'btn btn-primary' %></li>
+	<li><%= link_to 'Join a random game', random_path, method: :post, class: 'btn btn-primary' %></li>
+	<li><%= link_to 'Create a private game', games_path(game: {creator_id: current_user.id, status: "pending"}), method: :post, class: 'btn btn-primary' %></li>
 </ul>
 
 <h1>Current games</h1>
@@ -21,12 +21,57 @@
 				<td><%= game.creator.username %></td>
 				<td>Todo</td>
 				<td><%= game.created_at %></td>
-				<td><%= link_to "Go to game", invite_friends_path(game), class: "btn btn-primary" %></td>
+				<td>	
+					<% if game.status == "pending" %>
+						<ul class='button-list'>
+							<li>
+								<%= link_to "Resume", invite_friends_path(game), class: "btn btn-primary" %>
+							</li>
+							<li>
+								<%= link_to "Delete game", game_path(game), method: :delete, class: "btn btn-danger" %>
+							</li>
+						</ul>
+					<% elsif game.status == "ongoing" %>
+								todo
+					<% end %>
+				</td>
 			</tr>
 		<% end %>
-		
+		<!-- Make another table for ongoing games -->
+		<% current_user.games.not_created_by(current_user).each do |game| %>
+			<tr>
+				<td><%= game.creator.username %></td>
+				<td>Todo</td>
+				<td><%= game.created_at %></td>
+				<td>
+					<%= link_to "Resume", pending_game_path(game), class: "btn btn-primary" %>
+				</td>
+			</tr>
+		<% end %>
 	</tbody>
 </table>
 
 <h1>Pending invites</h1>
+
+<table class="table table-hover">
+	<thead>
+		<tr>
+			<th class="center"><strong>Creator</strong></th>
+			<th class="center"><strong>Status</strong></th>
+			<th class="center"><strong>Created at</strong></th>
+			<th class="center"><strong>Options</strong></th>
+
+		</tr>
+	</thead>
+	<tbody>
+		<% current_user.game_invites.each do |game| %>		
+			<tr>
+				<td><%= game.creator.username %></td>
+				<td>Todo</td>
+				<td><%= game.created_at %></td>
+				<td><%= link_to "Join", join_path(game), method: :post, class: "btn btn-primary" %></td>
+			</tr>
+		<% end %>
+	</tbody>
+</table>
 

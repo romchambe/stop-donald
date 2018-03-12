@@ -1,4 +1,4 @@
-<h1>Invite your friends</h1>
+<h1>Invite your friends - Status <%= @game.status %></h1>
 
 <table class="table table-hover" id="invite-friends">
 	<thead>
@@ -35,4 +35,4 @@
 	</tbody>
 </table>
 
-<%= link_to 'Launch game', game_path(@game), class: "btn btn-primary" %>
+<%= link_to 'Launch game', pending_game_path(@game), class: "btn btn-primary" %>

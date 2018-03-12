@@ -27,6 +27,12 @@ $green: #20c997;
 			background-color: $green;
 			border-color: $green;
 	}
+	.table {
+		td {
+			vertical-align: middle; 
+			flex-basis: 1; 
+		}
+	}
 }
 
 .form-field {
@@ -43,6 +49,8 @@ $green: #20c997;
 
 .button-list {
 	list-style: none; 
+	padding: 0; 
+	margin: 0;
 	li {
 		display: inline; 
 	}

@@ -7,6 +7,8 @@ source 'https://rubygems.org'
 gem 'rails', '~> 5.1.4'
 # Use Puma as the app server
 gem 'puma', '~> 3.7'
+# Websockets
+gem 'redis', '~> 3.0'
 
 # Sass and coffee syntaxes for CSS and JS in Rails 
 gem 'sass-rails', '~> 5.0'

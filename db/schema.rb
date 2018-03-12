@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180308151039) do
+ActiveRecord::Schema.define(version: 20180312173159) do
 
   create_table "delayed_jobs", force: :cascade do |t|
     t.integer "priority", default: 0, null: false
@@ -41,6 +41,10 @@ ActiveRecord::Schema.define(version: 20180308151039) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "creator_id"
+    t.string "status"
+    t.text "list_of_players"
+    t.text "cities"
+    t.text "launch_sites"
     t.index ["creator_id"], name: "index_games_on_creator_id"
   end
 

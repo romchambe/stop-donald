@@ -26,6 +26,11 @@ Rails.application.configure do
     config.cache_store = :null_store
   end
 
+  #Socket URI as set up in the routes
+  Rails.application.configure do 
+    config.action_cable.url = "ws://localhost:3000/cable"
+  end  
+
   # Don't care if the mailer can't send.
   config.action_mailer.raise_delivery_errors = false
 

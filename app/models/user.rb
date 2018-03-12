@@ -13,6 +13,7 @@ class User < ApplicationRecord
   						  foreign_key: 'game_invite_id', association_foreign_key: 'invitee_id'
 
   scope :all_except, ->(user) { where.not(id: user) }
+  
 
   # def send_devise_notification(notification, *args)
 	 #  devise_mailer.send(notification, self, *args).deliver_later
