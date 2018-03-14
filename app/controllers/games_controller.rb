@@ -1,7 +1,7 @@
 class GamesController < ApplicationController
 
   before_action :authenticate_user!
-  before_action :find_game, only: [:invite_friends, :edit, :update, :invite, :uninvite, :join, :pending_game,:destroy]
+  before_action :find_game, only: [:show, :edit, :update, :invite, :uninvite, :send_invites, :join,:destroy]
   before_action :find_invitee, only: [:invite, :uninvite]
 
   def index
@@ -10,7 +10,7 @@ class GamesController < ApplicationController
   def create
   	@game = Game.new(game_params)
   	if @game.save
-  	  redirect_to invite_friends_path(@game)
+  	  redirect_to game_path(@game)
     else
       flash[:danger] = 'An error occurred, please contact us at xyz@gmail.com'
       redirect_to games_path
@@ -20,6 +20,12 @@ class GamesController < ApplicationController
 
   def show
   	#show the game once it is launched. Should redirect to pending_game until the 3 players have joined
+    if @game.status == "invite_friends" && @game.creator != current_user
+      flash[:danger] = 'The creator of this game needs to finish inviting players before you can join.'
+      redirect_to games_path
+    else
+      render_partial_for(@game.status)
+    end 
   end
 
   def random_game
@@ -28,14 +34,7 @@ class GamesController < ApplicationController
     else 
       @game = join_random_game(current_user)
     end
-    redirect_to pending_game_path(@game)
-  end
-
-  def invite_friends 
-    if current_user != @game.creator
-      flash[:danger] = 'Since you are not the creator of the game, you cannot invite players'
-      redirect_to games_path
-    end
+    redirect_to game_path(@game)
   end
 
   def invite
@@ -43,12 +42,12 @@ class GamesController < ApplicationController
 	  	@game.invitees << @invitee
 
 	  	respond_to do |format|
-	      format.html { redirect_to invite_friends_path(@game) }
+	      format.html { redirect_to game_path(@game) }
 	      format.js
 	    end
 	else 
 		flash[:danger] = 'You can only invite 2 players to the game'
-		redirect_to invite_friends_path(@game)
+		redirect_to game_path(@game)
 	end	
   end
 
@@ -56,41 +55,31 @@ class GamesController < ApplicationController
   	@game.invitees.destroy(@invitee)
 
   	respond_to do |format|
-      format.html { redirect_to invite_friends_path(@game) }
+      format.html { redirect_to game_path(@game) }
       format.js
     end
   end
 
-  def pending_game
-    #sends to the view that players should see until the 3 players have joined
+  def send_invites
+    if @game.invitees.size == 2
+      @game.update(status: "pending")
+      redirect_to game_path(@game)
+    else
+      flash[:danger] = 'You need to invite 2 persons to this game'
+      redirect_to game_path(@game)
+    end
   end
 
   def join
-    if @game.players.size < 3
+    if @game.players.size < 3 && !@game.players.include?(current_user)
       
-      if @game.players << current_user
-        ActionCable.server.broadcast 'WaitingRooms',
-          players_count: @game.players.size,
-          user: current_user.username
-        head :ok
-      end 
-      
+      @game.players << current_user
       @game.invitees.delete(current_user)
-      
       if @game.players.size == 3
         @game.update(status: "ongoing")
-        ActionCable.server.broadcast 'WaitingRooms',
-          status: @game.status
-        head :ok
       end
       
-      redirect_to pending_game_path(@game)
-    
-    else 
-    
-      flash[:danger] = 'this game is already complete'
-      redirect_to games_path
-    
+      redirect_to game_path(@game)
     end
   end
 

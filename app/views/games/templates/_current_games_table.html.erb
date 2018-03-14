@@ -1,0 +1,40 @@
+<thead>
+	<tr>
+		<th class="center"><strong>Creator</strong></th>
+		<th class="center"><strong>Status</strong></th>
+		<th class="center"><strong>Created at</strong></th>
+		<th class="center"><strong>Options</strong></th>
+
+	</tr>
+</thead>
+<tbody>
+	<% Game.created_by(current_user).each do |game| %>
+		<tr>
+			<td><%= game.creator.username %></td>
+			<td>Todo</td>
+			<td><%= game.created_at %></td>
+			<td>	
+				<ul class='button-list'>
+					<li>
+						<%= link_to "Resume", game_path(game), class: "btn btn-primary", data: {game: game.id, status: game.status} %>
+					</li>
+					<% if game.status != "ongoing" %>
+						<li>
+							<%= link_to "Delete game", game_path(game), method: :delete, class: "btn btn-danger" %>
+						</li>
+					<% end %> 
+				</ul>
+			</td>
+		</tr>
+	<% end %>
+	<% current_user.games.not_created_by(current_user).each do |game| %>
+		<tr>
+			<td><%= game.creator.username %></td>
+			<td>Todo</td>
+			<td><%= game.created_at %></td>
+			<td>
+				<%= link_to "Resume", game_path(game), class: "btn btn-primary", data: {game: game.id, status: game.status} %>
+			</td>
+		</tr>
+	<% end %>
+</tbody>

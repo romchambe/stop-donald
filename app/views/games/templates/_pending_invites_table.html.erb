@@ -1,0 +1,21 @@
+<thead>
+	<tr>
+		<th class="center"><strong>Creator</strong></th>
+		<th class="center"><strong>Status</strong></th>
+		<th class="center"><strong>Created at</strong></th>
+		<th class="center"><strong>Options</strong></th>
+
+	</tr>
+</thead>
+<tbody>
+	<% current_user.game_invites.each do |game| %>	
+		<% if game.status == "pending" %>	
+			<tr>
+				<td><%= game.creator.username %></td>
+				<td>Todo</td>
+				<td><%= game.created_at %></td>
+				<td><%= link_to "Join", join_path(game), method: :post, class: "btn btn-primary", id: "join-game", data:{user: current_user.id } %></td>
+			</tr>
+		<% end %>
+	<% end %>
+</tbody>

@@ -1,0 +1,28 @@
+//= require cable
+//= require_self
+//= require_tree .
+
+let arrayOfGames = []; 
+
+$(document).on('turbolinks:load', function() {
+	console.log('loaded');
+	if (location.pathname.includes("/games")) {
+		$('[data-game]').each( function(index, element) {
+			arrayOfGames.push(element.dataset.game);
+			console.log(element.dataset.game);
+		});
+
+		arrayOfGames.forEach(function (gameId) {
+			App["waiting_room_" + gameId] = App.cable.subscriptions.create({channel: 'WaitingRoomChannel', waiting_room: gameId}, {  
+				received: function(data) {
+					console.log('notif-received');
+				    $("#notification-area").html(data.message);
+				}
+			});
+		});
+	};
+});
+
+
+
+		

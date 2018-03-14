@@ -22,17 +22,42 @@ $green: #20c997;
 				}
 			}
 		}
+		.navbar-toggler {
+			border: 1px solid white;
+		}
+		.navbar-toggler-icon {
+			background-image: url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 32 32' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='white' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 8h24M4 16h24M4 24h24'/%3E%3C/svg%3E");
+		}
 	}
 	.btn-primary {
 			background-color: $green;
 			border-color: $green;
 	}
 	.table {
+		margin: 0;
 		td {
 			vertical-align: middle; 
 			flex-basis: 1; 
 		}
 	}
+}
+
+html, body {
+	height:100%; 
+}
+
+body {
+/* 	background-color: $blue; 
+	color: white; */
+}
+
+.content-section {
+	margin-bottom: 2rem;
+}
+
+.table-title {
+	text-align: center;
+	margin-bottom: 1rem;
 }
 
 .form-field {

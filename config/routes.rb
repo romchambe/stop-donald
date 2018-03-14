@@ -5,14 +5,12 @@ Rails.application.routes.draw do
 
   mount ActionCable.server => '/cable'
 
-  get '/games/:id/invite_friends', to: 'games#invite_friends', as: 'invite_friends'
   post '/games/:id/invite', to: 'games#invite', as: 'invite'
   delete '/games/:id/uninvite', to: 'games#uninvite', as: 'uninvite'
 
   post '/games/random', to: 'games#random_game', as: 'random'
 
-  get '/games/:id/pending', to: 'games#pending_game', as: 'pending_game'
-
+  post '/games/:id/send_invites', to: 'games#send_invites', as: 'send_invites'
   post '/games/:id/join', to: 'games#join', as: 'join'
 
   devise_for :users
