@@ -1,4 +1,47 @@
-<h1>
-	The game starts!
-	
-</h1>
+
+
+<!-- The Modal -->
+<div class="modal fade" id="modal-show">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <!-- Modal Header -->
+      <div class="modal-header">
+        <h4 class="modal-title">Each seconds counts</h4>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+
+      <!-- Modal body -->
+      <div class="modal-body">
+    	<p class='center'>
+			On the night of the 3rd November 2020, Donald Trump announced in a tweet that he would "rip the f****** world apart with (his) big nuclear button if Michelle Obama is inaugurated President"
+		</p>
+
+		<p class="center">
+			To prevent the advent of an era of terror, the countdown to stop him before the 20th Jan 2021 has begun.
+		</p>
+      </div>
+
+      <!-- Modal footer -->
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary center" data-dismiss="modal">Let's get started!</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div data-game='<%= @game.id %>'>
+	Game initialized!
+	<% @game.cities.each do |city, attributes| %>
+    <p><%= city %>: <%= attributes %></p>
+  <% end %>
+
+  <% @game.players.each do |player| %>
+    <p><%= player.username %></p>
+    <p><%= player.country %></p>
+    <p><%= player.spies %></p>
+    <p><%= player.available_forces %></p>
+  <% end %>
+
+</div>

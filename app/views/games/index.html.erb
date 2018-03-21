@@ -1,7 +1,8 @@
 <section class="content-section">
 <ul class="button-list">
 	<li><%= link_to 'Join a random game', random_path, method: :post, class: 'btn btn-primary' %></li>
-	<li><%= link_to 'Create a private game', games_path(game: {creator_id: current_user.id, status: "invite_friends"}), method: :post, class: 'btn btn-primary' %></li>
+	<li><%= link_to 'Create a private game', games_path(game: {creator_id: current_user.id, status: "invite_friends"}), 
+			method: :post, class: 'btn btn-primary' %></li>
 </ul>
 </section>
 

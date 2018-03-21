@@ -81,10 +81,22 @@ body {
 	}
 }
 
+.left {
+	margin-left: 1rem;
+}
+
+.center {
+	text-align: center; 
+}
+
 td {
 	vertical-align: middle;
 }
 
 .hidden {
 	display: none;
+}
+
+#modal-show {
+	display: inline;
 }

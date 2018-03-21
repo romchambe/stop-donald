@@ -1,2 +1,4 @@
 $('#invite-player-<%= params[:invitee_id] %>').css('display', 'inline-block'); 
 $('#uninvite-player-<%= params[:invitee_id] %>').css('display', 'none');
+$('#invite-player-<%= params[:invitee_id] %>').attr('data-invite', 'false');
+$('#uninvite-player-<%= params[:invitee_id] %>').attr('data-uninvite', 'true');

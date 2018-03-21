@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180312173159) do
+ActiveRecord::Schema.define(version: 20180321111942) do
 
   create_table "delayed_jobs", force: :cascade do |t|
     t.integer "priority", default: 0, null: false
@@ -42,7 +42,6 @@ ActiveRecord::Schema.define(version: 20180312173159) do
     t.datetime "updated_at", null: false
     t.integer "creator_id"
     t.string "status"
-    t.text "list_of_players"
     t.text "cities"
     t.text "launch_sites"
     t.index ["creator_id"], name: "index_games_on_creator_id"
@@ -53,6 +52,23 @@ ActiveRecord::Schema.define(version: 20180312173159) do
     t.integer "user_id", null: false
     t.index ["game_id", "user_id"], name: "index_games_users_on_game_id_and_user_id"
     t.index ["user_id", "game_id"], name: "index_games_users_on_user_id_and_game_id"
+  end
+
+  create_table "players", force: :cascade do |t|
+    t.integer "user_id"
+    t.integer "game_id"
+    t.string "country"
+    t.string "username"
+    t.integer "lost_cities"
+    t.integer "lost_launch_sites"
+    t.text "launch_sites"
+    t.text "available_forces"
+    t.text "engaged_forces"
+    t.text "spies"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["game_id"], name: "index_players_on_game_id"
+    t.index ["user_id"], name: "index_players_on_user_id"
   end
 
   create_table "users", force: :cascade do |t|

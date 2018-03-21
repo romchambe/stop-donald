@@ -1,7 +1,7 @@
 class GamesController < ApplicationController
 
   before_action :authenticate_user!
-  before_action :find_game, only: [:show, :edit, :update, :invite, :uninvite, :send_invites, :join,:destroy]
+  before_action :find_game, only: [:show, :initializer, :update, :invite, :uninvite, :send_invites, :join,:destroy]
   before_action :find_invitee, only: [:invite, :uninvite]
 
   def index
@@ -15,7 +15,7 @@ class GamesController < ApplicationController
       flash[:danger] = 'An error occurred, please contact us at xyz@gmail.com'
       redirect_to games_path
     end
-    @game.players << current_user
+    Player.create(game_id: @game.id, user_id: current_user.id, username: User.find(current_user.id).username)
   end
 
   def show
@@ -71,13 +71,11 @@ class GamesController < ApplicationController
   end
 
   def join
-    if @game.players.size < 3 && !@game.players.include?(current_user)
+    if @game.players.size < 3 && @game.players.where(user_id: current_user.id).empty?
       
-      @game.players << current_user
+      Player.create(game_id: @game.id, user_id: current_user.id, username: User.find(current_user.id).username)
       @game.invitees.delete(current_user)
-      if @game.players.size == 3
-        @game.update(status: "ongoing")
-      end
+      ready_to_start?(@game)
       
       redirect_to game_path(@game)
     end
@@ -91,6 +89,11 @@ class GamesController < ApplicationController
     @game.destroy
     render 'index'
   end 
+
+  def get_current_user
+    @user = current_user
+    render json: {id: @user.id}
+  end
 
   private
 
