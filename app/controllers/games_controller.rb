@@ -1,8 +1,10 @@
 class GamesController < ApplicationController
 
   before_action :authenticate_user!
-  before_action :find_game, only: [:show, :initializer, :update, :invite, :uninvite, :send_invites, :join,:destroy]
   before_action :find_invitee, only: [:invite, :uninvite]
+  before_action :find_game, only: [:show, :actions, :update, :invite, :cancel_action,
+                                   :uninvite, :send_invites, :join, :destroy]
+  before_action :find_player, only: [:actions, :update]
 
   def index
   end
@@ -24,6 +26,9 @@ class GamesController < ApplicationController
       flash[:danger] = 'The creator of this game needs to finish inviting players before you can join.'
       redirect_to games_path
     else
+      if @game.status == "ongoing"
+        find_player
+      end
       render_partial_for(@game.status)
     end 
   end
@@ -81,9 +86,64 @@ class GamesController < ApplicationController
     end
   end
 
+
+
+  def actions
+    @player.update(status: params[:user_action])
+
+    if params[:user_action] == 'recruit'
+      render json: {selector: '#modal-form', user_action: params[:user_action], 
+      msg: '', game_id: params[:id]}
+
+    elsif params[:user_action] == 'mission'
+      missionable_cities = get_missionable_cities @game, @player
+      render json: {selector: '#cities', user_action: params[:user_action], 
+      msg: missionable_cities, game_id: params[:id], max: @player.spies.length}
+
+    elsif params[:user_action] == 'attack'
+      attackable_cities = get_attackable_cities(@game)
+      render json: {selector: '#cities', user_action: params[:user_action], 
+        msg: attackable_cities, game_id: params[:id], max: 1}
+
+    elsif params[:user_action] == 'reinforce'
+      reinforcements = reinforcements_for(@player)
+      render json: {selector: '#modal-form', user_action: params[:user_action], 
+      msg: reinforcements, game_id: params[:id]}
+
+    else
+      flash[:danger] = 'This is not an allowed action'
+      redirect_to game_path(@game)
+    end
+  end
+
+  def cancel_action
+    @player.update(status: 'pending_action')
+    redirect_to game_path(@game)
+  end
+
   def update
     #method used by players to go to the next turn and update the state of the game with their actions
+    @player.update(status: 'updated')
+
+    if params[:user_action] == 'recruit'
+      
+    elsif params[:user_action] == 'mission'
+      
+    elsif params[:user_action] == 'attack'
+      
+    elsif params[:user_action] == 'reinforce'
+     
+    else
+      flash[:danger] = 'This is not an allowed action'
+      redirect_to game_path(@game)
+    end
   end 
+
+  def next_turn
+    if @game.turn_number % 5 == 0
+      trump_moves(@game)
+    end
+  end
 
   def destroy
     @game.destroy
@@ -100,6 +160,10 @@ class GamesController < ApplicationController
   def find_game
   	obfuscated_id = Hashids.new("l'art de la guerre", 8)
   	@game = Game.find(obfuscated_id.decode(params[:id]))[0]
+  end
+
+  def find_player
+    @player = Player.find_by(user_id: current_user.id) 
   end
 
   def find_invitee

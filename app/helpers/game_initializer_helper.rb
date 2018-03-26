@@ -27,31 +27,54 @@ module GameInitializerHelper
 	Portland: {pop: 2424955}
   }
 
+  REBELS_FORCES = {
+  	rebels: {aircrafts: 4550, tanks: 1750}
+  }
+
   US_FORCES = {
-  	us_army: {aircrafts: 8450, tanks: 3250}, 
-	rebels: {aircrafts: 4550, tanks: 1750}
+  	us_army: {aircrafts: 8450, tanks: 3250}
   }
 
   US_LAUNCH_SITES = {
-  	usa: ["Alaska", "Hawaii", "Iowa", "Arctic", "Guam", "Aleoutians"]
+  	usa: {
+  	  alaska: {operational: true}, hawaii: {operational: true}, iowa: {operational: true}, 
+  	  arctic: {operational: true}, guam: {operational: true}, aleoutians: {operational: true}
+  	}
   }
 
   FORCES_INITIALIZER = {
-	europe: {aircrafts: 5000, tanks: 1500}, 
-	china: {aircrafts: 3000, tanks: 1900}, 
-	russia: {aircrafts: 3500, tanks: 2500}
+	europe: {aircrafts: 5000, tanks: 1600}, 
+	china: {aircrafts: 3000, tanks: 1920}, 
+	russia: {aircrafts: 3300, tanks: 2700}
   }
   
   LAUNCH_SITES_INITIALIZER = {
-	europe: ["Iceland", "Guyana", "Tahiti"], 
-	russia: ["Mourmansk", "Kamchatka", "Sakhaline"],
-	china: ["North", "Center", "West", "East", "South"]
+	europe: {
+  	  iceland: {operational: true}, guyana: {operational: true}, tahiti: {operational: true}
+  	},
+	russia: {
+  	  mourmansk: {operational: true}, kamchatka: {operational: true}, sakhaline: {operational: true},
+	},
+	china: {
+	  north: {operational: true}, center: {operational: true}, east: {operational: true}, 
+	  west: {operational: true}, south:{operational: true}
+	}
   } 
 
   SPIES_INITIALIZER =  {
-	europe: ["James Bond", "Hubert Bonisseur de La Bath"],
-	russia: ["Anatoly Gogol", "Kseniya Onatopp", "Leonid Pushkin"], 
-	china: ["Wai Lin", "Wendi Deng Murdoch"]
+	europe: {
+			  0 => {name:"James Bond", operational: true}, 
+			  1 => {name:"Hubert Bonisseur de La Bath", operational: true}
+			},
+	russia: {
+			  0 => {name:"Anatoly Gogol", operational: true}, 
+			  1 => {name: "Kseniya Onatopp", operational: true},
+			  2 => {name:"Leonid Pushkin", operational: true}
+			},
+	china: 	{
+			  0 => {name:"Wai Lin", operational: true}, 
+			  1 => {name:"Wendi Deng Murdoch", operational: true}
+			}
   }
-  
+
 end 

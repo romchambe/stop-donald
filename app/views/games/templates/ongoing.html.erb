@@ -1,17 +1,15 @@
 
 
-<!-- The Modal -->
+<!-- 
 <div class="modal fade" id="modal-show">
   <div class="modal-dialog">
     <div class="modal-content">
 
-      <!-- Modal Header -->
       <div class="modal-header">
         <h4 class="modal-title">Each seconds counts</h4>
         <button type="button" class="close" data-dismiss="modal">&times;</button>
       </div>
 
-      <!-- Modal body -->
       <div class="modal-body">
     	<p class='center'>
 			On the night of the 3rd November 2020, Donald Trump announced in a tweet that he would "rip the f****** world apart with (his) big nuclear button if Michelle Obama is inaugurated President"
@@ -22,26 +20,117 @@
 		</p>
       </div>
 
-      <!-- Modal footer -->
       <div class="modal-footer">
         <button type="button" class="btn btn-primary center" data-dismiss="modal">Let's get started!</button>
       </div>
 
     </div>
   </div>
-</div>
+</div> -->
 
-<div data-game='<%= @game.id %>'>
-	Game initialized!
-	<% @game.cities.each do |city, attributes| %>
-    <p><%= city %>: <%= attributes %></p>
-  <% end %>
 
-  <% @game.players.each do |player| %>
-    <p><%= player.username %></p>
-    <p><%= player.country %></p>
-    <p><%= player.spies %></p>
-    <p><%= player.available_forces %></p>
-  <% end %>
+<div class='container' data-game='<%= @game.id %>'>
+	<div class="row">
+     <div class="col-sm-4">
+      <p><%= @player.country %></p>
+      <p>Available spies <%= @player.spies %></p>
+      <p>Available forces <%= @player.available_forces %></p>
+      <p><%= @player.launch_sites %></p>
+      <p>Cities lost by player: <%= @player.lost_cities %></p>
+      <div>
+        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modal-action-selection" id='action-selection'>
+          Available actions
+        </button>
+        <%= link_to 'Cancel action', cancel_action_path(@game), method: :delete, 
+        class: "btn btn-danger hidden", id:'action-cancel' %>
+       
+      </div>
+
+
+      <div class="modal fade" id="modal-action-selection">
+        <div class="modal-dialog">
+          <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header">
+              <h3 class="modal-title">What will you do, <%= @player.country.capitalize %>?</h4>
+              <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+        
+            <!-- Modal body -->
+            <div class="modal-body" id='modal-form'>
+              <div id="modal-actions">
+                <ul class="button-list-vertical">
+                  <li>
+                    <button type="button" class="btn btn-primary" data-action="recruit">
+                      Recruit a new spy
+                    </button>
+                  </li>
+                  <li>
+                    <button type="button" class="btn btn-primary" data-action="mission">
+                      Place your spies
+                    </button>
+                  </li>
+                  <li>
+                    <button type="button" class="btn btn-primary" data-action="attack">
+                      Launch a nuclear attack
+                    </button>
+                  </li>
+                  <li>
+                    <button type="button" class="btn btn-primary" data-action="reinforce">
+                      Send reinforcements to rebels
+                    </button>
+                  </li>
+                </ul>
+              </div>
+              <div id="modal-update" class='hidden'>
+                <form action=<%= game_path(@game)%> method="post" class='modal-form'>
+                  <%= hidden_field_tag :authenticity_token, form_authenticity_token -%>
+                  <input name="_method" type="hidden" value="patch" />
+
+                </form>
+                <div class="alert alert-info hidden" id="modal-notification-area"></div>
+              </div>
+             </div>
+
+            <!-- Modal footer -->
+            <div class="modal-footer">
+              <button type="button" class="btn btn-danger center" data-dismiss="modal" id='modal-dismissal'>
+                Back to map
+              </button>
+              <%= link_to 'Cancel action', cancel_action_path(@game), method: :delete, 
+              class: "btn btn-danger hidden", id:'modal-action-cancel' %>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-sm-8">
+      <%= @game.rebels_forces %>
+      <%= @game.us_army_forces %>
+      <%= @game.launch_sites %>
+      
+      <div id="cities">
+        <form action=<%= game_path(@game)%> method="post" class='cities-form' id='cities-form'>
+          <%= hidden_field_tag :authenticity_token, form_authenticity_token -%>
+          <input name="_method" type="hidden" value="patch" />
+          <% @game.cities.each do |city, attributes| %>
+            
+            <input type="checkbox" name="cities[<%= attributes[:id] %>]" value="<%= city %>" class='city-input' 
+            id='city-id-<%= attributes[:id] %>' disabled>
+              <%= city %>: <%= attributes[:pop] %> / 
+              <%= attributes[:spies][@player.country.to_sym].nil? ? 'no spies' : attributes[:spies][@player.country.to_sym] %> / 
+              <%= attributes[:destroyed] ? 'Annihilated' : 'ok' %> / 
+              <%= attributes[:conquered] ? 'Conquered' : 'ok' %>
+            <br>
+          <% end %>
+          <input type="submit" value="Update" name="commit" 
+          class="btn btn-primary hidden" id='cities-submit' disabled />
+        </form>
+      </div>
+    </div>
+  </div>
 
 </div>

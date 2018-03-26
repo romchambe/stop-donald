@@ -2,7 +2,7 @@ Rails.application.routes.draw do
 
   root 'pages#home'
   resources :games
-
+  get '/snowboard', to: 'pages#snowboard'
   get 'current_user', to: "games#get_current_user"
 
   mount ActionCable.server => '/cable'
@@ -14,6 +14,9 @@ Rails.application.routes.draw do
 
   post '/games/:id/send_invites', to: 'games#send_invites', as: 'send_invites'
   post '/games/:id/join', to: 'games#join', as: 'join'
+
+  post '/games/:id/actions', to: 'games#actions', as: 'actions'
+  delete '/games/:id/cancel_action', to: 'games#cancel_action', as: 'cancel_action'
 
   devise_for :users
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html

@@ -72,12 +72,24 @@ body {
 	color: white; 
 }
 
+
 .button-list {
 	list-style: none; 
 	padding: 0; 
 	margin: 0;
 	li {
 		display: inline; 
+	}
+}
+
+.button-list-vertical {
+	list-style: none; 
+	padding: 0; 
+	margin: 0;
+	.btn {
+		width: 50%;
+		margin: 8px 0;
+		min-width: 136px;
 	}
 }
 
@@ -97,6 +109,14 @@ td {
 	display: none;
 }
 
-#modal-show {
-	display: inline;
+#modal-notification-area {
+	margin-top: 1rem;
+}
+.waiting {
+	height:100%;
+	background-color: rgba(0,0,0,0.8); 
+	color: white; 
+	display: flex;
+	align-items: center; 
+	justify-content: center;
 }

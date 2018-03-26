@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180321111942) do
+ActiveRecord::Schema.define(version: 20180324122958) do
 
   create_table "delayed_jobs", force: :cascade do |t|
     t.integer "priority", default: 0, null: false
@@ -36,8 +36,8 @@ ActiveRecord::Schema.define(version: 20180321111942) do
 
   create_table "games", force: :cascade do |t|
     t.integer "turn_number"
-    t.integer "us_army_force"
-    t.integer "rebels_force"
+    t.text "us_army_forces"
+    t.text "rebels_forces"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "creator_id"
@@ -45,13 +45,6 @@ ActiveRecord::Schema.define(version: 20180321111942) do
     t.text "cities"
     t.text "launch_sites"
     t.index ["creator_id"], name: "index_games_on_creator_id"
-  end
-
-  create_table "games_users", id: false, force: :cascade do |t|
-    t.integer "game_id", null: false
-    t.integer "user_id", null: false
-    t.index ["game_id", "user_id"], name: "index_games_users_on_game_id_and_user_id"
-    t.index ["user_id", "game_id"], name: "index_games_users_on_user_id_and_game_id"
   end
 
   create_table "players", force: :cascade do |t|
@@ -67,6 +60,7 @@ ActiveRecord::Schema.define(version: 20180321111942) do
     t.text "spies"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "status"
     t.index ["game_id"], name: "index_players_on_game_id"
     t.index ["user_id"], name: "index_players_on_user_id"
   end

@@ -34,7 +34,7 @@ module GamesHelper
   def ready_to_start?(game)
     if game.players.size == 3
       game.update(status: "ongoing")
-      get_started(@game)
+      get_started(game)
     end
   end
 
@@ -61,11 +61,62 @@ module GamesHelper
       else 
         properties[:trump] = false
       end
+      properties[:id] = counter
       properties[:spies] = {}
+      properties[:destroyed] = false
+      properties[:conquered] = false
       counter += 1
     end
+    game.update(turn_number: 1, cities: cities, us_army_forces: US_FORCES[:us_army], rebels_forces: REBELS_FORCES[:rebels], launch_sites: US_LAUNCH_SITES[:usa])
+  end
+  
+  def get_missionable_cities(game, player)
+    missionable_cities = {}
+    game.cities.each do |city,properties|
+      if !properties[:destroyed] && !properties[:conquered] && !properties[:spies].include?(player.country)
+        missionable_cities[city] = {id: properties[:id]}
+      end
+    end
+    return missionable_cities
+  end
+
+  def get_attackable_cities(game)
+    attackable_cities = {}
+    game.cities.each do |city,properties|
+      if !properties[:destroyed] && !properties[:conquered]
+        attackable_cities[city] = {id: properties[:id]}
+      end
+    end
+    return attackable_cities
+  end 
+  
+  def reinforcements_for(player)
+    reinforcements = {aircrafts: 0, tanks: 0}
+    if player.country.to_sym == :europe
+      reinforcements[:aircrafts] = FORCES_INITIALIZER[player.country.to_sym][:aircrafts] / 4
+      reinforcements[:tanks] = FORCES_INITIALIZER[player.country.to_sym][:tanks] / 4
+    else
+      reinforcements[:aircrafts] = FORCES_INITIALIZER[player.country.to_sym][:aircrafts] / 6
+      reinforcements[:tanks] = FORCES_INITIALIZER[player.country.to_sym][:tanks] / 6
+    end
+    return reinforcements
+  end
+  
+  def trump_moves(game)
+    possible_locations = []
     
-    game.update(turn_number: 1, cities: cities, launch_sites: US_LAUNCH_SITES[:usa], 
-                us_army_force: US_FORCES[:us_army], rebels_force: US_FORCES[:rebels])
+    game.cities.each do |city, properties|
+      if !properties[:destroyed] && !properties[:conquered] && !properties[:trump]
+        possible_locations << city
+      elsif properties[:trump]
+        properties[:trump] = false
+      end
+    end
+
+    trump_location = rand(possible_locations.length)
+    game.cities[possible_locations[trump_location]][:trump] = true 
+    game.save  
+
+    flash[:danger] = 'Trump has moved to a different city!'
   end
 end

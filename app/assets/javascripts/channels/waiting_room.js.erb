@@ -13,8 +13,10 @@ function subscriptionCreator (gameId) {
 		    
 		    if (window.location.href.includes('games/' + gameId)) {
 		    	window.location.reload();
+		    	$("#notification-area").removeClass('hidden');
 		    	$("#notification-area").html(data.message);
 		    } else {
+		    	$("#notification-area").removeClass('hidden');
 		    	$("#notification-area").html(data.message + "<a href='/games/" + gameId +"' class='btn btn-info left'>Go to game</a>");
 		    };
 

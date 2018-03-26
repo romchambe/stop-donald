@@ -1,0 +1,105 @@
+let user_action;
+
+let modalFormContent = {
+	'recruit':'<p>What will be the name of this new spy?</p><input id="spy-name" name="spy[name]" type="text" /><input type="submit" class="btn btn-primary" value="Update" name="commit" id="modal-submit">', 
+	'reinforce':'<input type="submit" class="btn btn-primary" value="Update" name="commit" id="modal-submit">' 
+};
+
+function bindModalFormListeners () {
+	$('#modal-form .btn').on("click", function() {
+		let action = {};
+		action.user_action = this.dataset.action;
+		let address = window.location.href + '/actions'
+		$.ajax({
+		  type: "POST",
+		  url: address,
+		  data: JSON.stringify(action),
+		  success: function (data) {
+		  	actionResponse(data);
+		  },
+		  dataType: 'json',
+		  contentType: 'application/json'
+		});
+	});
+}
+
+function bindActionButtonListeners() {
+	$('#action-selection').on('click', function() {
+		$('#action-selection').addClass('hidden');
+		$('#action-cancel').removeClass('hidden');
+	}); 
+
+
+}
+
+function actionResponse (data) {
+	let user_action = data.user_action;
+	let action;
+
+	if (data.selector === '#cities') {
+		for (var key in data.msg) {
+    		if (data.msg.hasOwnProperty(key)) {
+    			el = '#city-id-' + data.msg[key]["id"]; 
+    			$(el).removeAttr('disabled');
+			}; 
+		};
+
+		$('#modal-action-selection').modal('toggle');
+
+		action = $('#cities-form').attr('action') + '?user_action=' + user_action;
+		$('#cities-form').attr('action', action);
+		
+		$('#cities-submit').removeClass('hidden');
+		$('#cities-submit').removeAttr('disabled');
+
+		$('.city-input').on('click', function() {
+			checkNumberOfSelectedCities(data.max);
+		});
+
+	} else if (data.selector === '#modal-form') {
+		$('#modal-actions').addClass('hidden');
+		$('#modal-dismissal').addClass('hidden');
+		$('#modal-update').removeClass('hidden');
+		$('#modal-action-cancel').removeClass('hidden');
+
+		action = $('#modal-update form').attr('action') + '?user_action=' + user_action;
+		$('#modal-update form').attr('action', action);
+
+		if (user_action === 'reinforce') {
+			let reinforcementConfirmation = 'You are about to send ';
+			for (var key in data.msg) {
+	    		if (data.msg.hasOwnProperty(key)) {
+	    			reinforcementConfirmation += data.msg[key] + ' ' + key + ' ';
+				}; 
+			};
+			reinforcementConfirmation += 'to the rebels. <p>Do you want to proceed?</p>';
+			$('#modal-update form').append(reinforcementConfirmation + modalFormContent[user_action]); 
+
+		} else {
+			$('#modal-update form').append(modalFormContent[user_action]);
+			$('#modal-update form').attr('onsubmit','checkSpyNameLength()');
+		};
+	};
+}
+
+function checkSpyNameLength () {
+ 	if ($("#spy-name").val().length > 2) {
+   		return;
+ 	};
+ 	$('#modal-notification-area').removeClass('hidden');
+ 	$('#modal-notification-area').html('The name of your spy must have at least 3 characters.');
+ 	event.preventDefault();
+}
+
+function checkNumberOfSelectedCities(max) {
+	if ($('.city-input:checked').length > max) {
+		$("#notification-area").removeClass('hidden');
+		$('#notification-area').html('You cannot select more than ' + max + ' cities/launch sites');
+		event.preventDefault();
+	}
+}
+
+$(document).on('turbolinks:load', function () {
+	bindModalFormListeners();
+	bindActionButtonListeners();
+});
