@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180324122958) do
+ActiveRecord::Schema.define(version: 20180328144408) do
 
   create_table "delayed_jobs", force: :cascade do |t|
     t.integer "priority", default: 0, null: false
@@ -47,6 +47,16 @@ ActiveRecord::Schema.define(version: 20180324122958) do
     t.index ["creator_id"], name: "index_games_on_creator_id"
   end
 
+  create_table "messages", force: :cascade do |t|
+    t.integer "player_id_id"
+    t.text "content"
+    t.integer "turn_number"
+    t.boolean "read"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["player_id_id"], name: "index_messages_on_player_id_id"
+  end
+
   create_table "players", force: :cascade do |t|
     t.integer "user_id"
     t.integer "game_id"
@@ -61,6 +71,8 @@ ActiveRecord::Schema.define(version: 20180324122958) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "status"
+    t.boolean "winner"
+    t.integer "timer"
     t.index ["game_id"], name: "index_players_on_game_id"
     t.index ["user_id"], name: "index_players_on_user_id"
   end

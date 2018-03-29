@@ -17,6 +17,7 @@ Rails.application.routes.draw do
 
   post '/games/:id/actions', to: 'games#actions', as: 'actions'
   delete '/games/:id/cancel_action', to: 'games#cancel_action', as: 'cancel_action'
+  post '/games/:id/timer_update', to: 'games#timer_update', as: 'timer_update'
 
   devise_for :users
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html

@@ -7,8 +7,8 @@ class Game < ApplicationRecord
   						  association_foreign_key: 'game_invite_id', foreign_key: 'invitee_id'
   
   serialize :cities
-  serialize :us_army_force
-  serialize :rebels_force
+  serialize :us_army_forces
+  serialize :rebels_forces
   serialize :launch_sites
 
   scope :created_by, ->(user) { where(creator_id: user) }

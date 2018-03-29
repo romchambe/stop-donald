@@ -27,6 +27,12 @@ module GameInitializerHelper
 	Portland: {pop: 2424955}
   }
 
+  CITIES_TO_BE_CONQUERED = [:Houston, :Dallas, :Atlanta, :Tampa, :Orlando, :Miami, 
+  							:San_Antonio, :St_Louis, :Charlotte, :Denver, :Chicago,
+  							:Phoenix, :Washington, :Philadelphia, :San_Diego, :Baltimore, :Minneapolis,
+  							:New_York, :Los_Angeles, :Riverside, :Boston, :Detroit, 
+  							:San_Francisco, :Portland, :Seattle]
+
   REBELS_FORCES = {
   	rebels: {aircrafts: 4550, tanks: 1750}
   }
@@ -37,8 +43,8 @@ module GameInitializerHelper
 
   US_LAUNCH_SITES = {
   	usa: {
-  	  alaska: {operational: true}, hawaii: {operational: true}, iowa: {operational: true}, 
-  	  arctic: {operational: true}, guam: {operational: true}, aleoutians: {operational: true}
+  	  alaska: {operational: true, id: 25}, hawaii: {operational: true, id: 26}, iowa: {operational: true, id: 27}, 
+  	  arctic: {operational: true, id: 28}, guam: {operational: true, id: 29}, aleoutians: {operational: true, id: 30}
   	}
   }
 
@@ -61,7 +67,7 @@ module GameInitializerHelper
 	}
   } 
 
-  SPIES_INITIALIZER =  {
+  SPIES_INITIALIZER = {
 	europe: {
 			  0 => {name:"James Bond", operational: true}, 
 			  1 => {name:"Hubert Bonisseur de La Bath", operational: true}
@@ -76,5 +82,7 @@ module GameInitializerHelper
 			  1 => {name:"Wendi Deng Murdoch", operational: true}
 			}
   }
+
+  UNITS_POWER = {aircrafts: 3, tanks: 2}
 
 end 

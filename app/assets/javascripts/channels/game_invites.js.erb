@@ -11,17 +11,23 @@ function inviteSubscriptionCreator(id) {
 	return App.cable.subscriptions.create({channel: 'GameInvitesChannel', user_id: id}, {  
 		received: function(data) {
 			if (userId === id) {
-				$("#notification-area").removeClass('hidden');
-				$("#notification-area").html(data.message + "<a href='/games/" + data.game_invite_id + "/join' rel='nofollow' data-method='post' class='btn btn-info left'>Join the game</a>");
+				$("#notification-area").append('<div class="alert alert-info">' + 
+					data.message + "<a href='/games/" + data.game_invite_id + 
+					"/join' rel='nofollow' data-method='post' class='btn btn-primary left'>Join the game</a></div>");
 			};
 		}
 	});
 }
 
-function bindClickListeners () {
+function bindInviteClickListeners () {
 	$('[data-invite]').on("click", function() {
 		gameInviteId = location.href.split('/').slice(-1).pop();
-		invitees.push(this.dataset.user);
+		if (this.dataset.invite === 'false') {
+			invitees.push(this.dataset.user);
+		} else if (this.dataset.invite === 'true') {
+			let index = invitees.indexOf(this.dataset.user);
+			invitees.splice(index, 1);
+		}
 	});
 
 	$('#send-invites').on('click', function() {
@@ -33,12 +39,10 @@ function bindClickListeners () {
 	});
 }
 
-$(document).ready(bindClickListeners);
-
 $(document).on('turbolinks:load', function () {
-	bindClickListeners();
 	$.get('/current_user', function(result){
   		userId = result.id;
   		App['game_invites_' + userId] = inviteSubscriptionCreator(userId); 
 	});
+	bindInviteClickListeners();
 });

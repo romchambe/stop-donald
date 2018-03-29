@@ -1,25 +1,26 @@
-<section class="content-section">
-<ul class="button-list">
-	<li><%= link_to 'Join a random game', random_path, method: :post, class: 'btn btn-primary' %></li>
-	<li><%= link_to 'Create a private game', games_path(game: {creator_id: current_user.id, status: "invite_friends"}), 
-			method: :post, class: 'btn btn-primary' %></li>
-</ul>
-</section>
+<div class='container' id='main-container'>	
+	<section class="content-section">
+	<ul class="button-list">
+		<li><%= link_to 'Join a random game', random_path, method: :post, class: 'btn btn-primary' %></li>
+		<li><%= link_to 'Create a private game', games_path(game: {creator_id: current_user.id, status: "invite_friends"}), 
+				method: :post, class: 'btn btn-primary' %></li>
+	</ul>
+	</section>
 
-<section class="content-section">
-	<h1 class='table-title'>Current games</h1>
+	<section class="content-section">
+		<h1 class='table-title'>Current games</h1>
 
-	<table class="table table-hover" id='current-games'>
-		<%= render 'games/templates/current_games_table' %>
-	</table>
-</section>
+		<table class="table table-hover" id='current-games'>
+			<%= render 'games/templates/current_games_table' %>
+		</table>
+	</section>
 
-<section class="content-section">
-	<h1 class='table-title'>Pending invites</h1>
+	<section class="content-section">
+		<h1 class='table-title'>Pending invites</h1>
 
-	<table class="table table-hover" id='pending-invites'>
-		<%= render 'games/templates/pending_invites_table' %>
-	</table>
-</section>
+		<table class="table table-hover" id='pending-invites'>
+			<%= render 'games/templates/pending_invites_table' %>
+		</table>
+	</section>
 
-
+</div>

@@ -1,11 +1,13 @@
 let user_action;
+let timer;
+let countdown;
 
 let modalFormContent = {
 	'recruit':'<p>What will be the name of this new spy?</p><input id="spy-name" name="spy[name]" type="text" /><input type="submit" class="btn btn-primary" value="Update" name="commit" id="modal-submit">', 
 	'reinforce':'<input type="submit" class="btn btn-primary" value="Update" name="commit" id="modal-submit">' 
 };
 
-function bindModalFormListeners () {
+function bindFormClickListeners () {
 	$('#modal-form .btn').on("click", function() {
 		let action = {};
 		action.user_action = this.dataset.action;
@@ -20,16 +22,14 @@ function bindModalFormListeners () {
 		  dataType: 'json',
 		  contentType: 'application/json'
 		});
-	});
-}
-
-function bindActionButtonListeners() {
-	$('#action-selection').on('click', function() {
 		$('#action-selection').addClass('hidden');
 		$('#action-cancel').removeClass('hidden');
+	});
+
+	$('#get-started').on('click', function() {
+		window.location.reload();
 	}); 
-
-
+	console.log('done');
 }
 
 function actionResponse (data) {
@@ -94,12 +94,40 @@ function checkSpyNameLength () {
 function checkNumberOfSelectedCities(max) {
 	if ($('.city-input:checked').length > max) {
 		$("#notification-area").removeClass('hidden');
-		$('#notification-area').html('You cannot select more than ' + max + ' cities/launch sites');
+		$('#notification-area').append('<div class="alert alert-notice">You cannot select more than ' + max + ' cities/launch sites </div>');
 		event.preventDefault();
 	}
 }
 
+function startTimer() {
+	clearInterval(countdown);
+	timer = parseInt($('#timer').text());
+
+	$(window).on('beforeunload', function () {
+ 		if (!isNaN(timer)) {
+ 			let timer_update = timer
+ 			$.ajax({
+		  		type: "POST",
+		  		url: window.location.href + '/timer_update?value=' + timer_update
+			});
+ 		};
+	});
+
+	countdown = setInterval(function() { 
+		timer -= 1;
+		if (timer <= 0) {
+			$.ajax({
+		  		type: "PUT",
+		  		url: window.location.href + '?user_action=pass'
+			});
+		}
+		$('#timer').html(timer);
+	}, 1000);
+}
+
 $(document).on('turbolinks:load', function () {
-	bindModalFormListeners();
-	bindActionButtonListeners();
+	bindFormClickListeners();
+	// startTimer();
 });
+
+
