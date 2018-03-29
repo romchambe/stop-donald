@@ -6,5 +6,5 @@ test:
 
 production:
   adapter: redis
-  url: redis://localhost:6379/1
+  url: redis://redistogo:efc7743423e389861156fb2cb341df14@tarpon.redistogo.com:9846/
   channel_prefix: stop-donald_production
