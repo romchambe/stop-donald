@@ -2,6 +2,7 @@ let user_action;
 let timer;
 let countdown;
 
+
 let modalFormContent = {
 	'recruit':'<p>What will be the name of this new spy?</p><input id="spy-name" name="spy[name]" type="text" /><input type="submit" class="btn btn-primary" value="Update" name="commit" id="modal-submit">', 
 	'reinforce':'<input type="submit" class="btn btn-primary" value="Update" name="commit" id="modal-submit">' 
@@ -29,7 +30,28 @@ function bindFormClickListeners () {
 	$('#get-started').on('click', function() {
 		window.location.reload();
 	}); 
-	console.log('done');
+
+	$('#message-button').on('click', function() {
+		$('#message-container').toggle();
+		$('#message-button').css('display','none');
+		$('#message-button-close').css('display','flex');
+	});
+	$('#message-button-close').on('click', function() {
+		$('#message-container').toggle();
+		$('#message-button-close').css('display','none');
+		$('#message-button').css('display','flex');
+	});
+
+	$('.unread').on('click', function () {
+		$(this).removeClass('unread'); 
+		$(this).addClass('read');
+		let message_id = this.dataset.message;
+		$.ajax({
+		  	type: "POST",
+		  	url: window.location.origin + '/read?message_id=' + message_id
+		});
+		updateUnread();
+ 	});
 }
 
 function actionResponse (data) {
@@ -125,9 +147,74 @@ function startTimer() {
 	}, 1000);
 }
 
+function updateUnread() {
+	let unreadCount = $('.unread').length;
+	if (unreadCount === 0) {
+		$('#unread-counter').css('opacity', '0');
+		$('#unread-counter-close').css('opacity', '0');
+	} else {
+		$('#unread-counter').css('opacity', '1');
+		$('#unread-counter').html(unreadCount);
+		$('#unread-counter-close').css('opacity', '1');
+		$('#unread-counter-close').html(unreadCount);
+	};
+}
+
+function generateMap () {
+
+        mapboxgl.accessToken = 
+        'pk.eyJ1Ijoicm9tY2hhbWJlIiwiYSI6ImNqZmRyZW1pNDJxMDEycm52NnQ1a2NmMzQifQ.T_tgG6mX6yfcLaGRmT0sgg';
+        
+        let map = new mapboxgl.Map({
+            container: 'map',
+            style: 'mapbox://styles/romchambe/cjfdrfwhd9z052snsvfduuzg2', 
+            center: [-110.425,45.491],
+  			zoom: 2.25,
+  			maxZoom: 3.8, 
+  			minZoom: 1.8,
+  			attributionControl: false
+        });
+        map.dragRotate.disable();
+        map.addControl(new mapboxgl.FullscreenControl());
+
+        let address = window.location.href + '/map';
+        let currentUserId = {user_id: userId}
+        $.ajax({
+		  type: "POST",
+		  url: address,
+		  success: function (data) {
+		  	populateMap(data, map);
+		  },
+		  dataType: 'json',
+		  contentType: 'application/json'
+		});
+}
+
+function populateMap(arrayOfFeatures,map) {
+	
+	var geojson = {
+  	  type: 'FeatureCollection',
+  	  features: arrayOfFeatures
+  	};
+  	console.log(geojson);
+	geojson.features.forEach(function(marker) {
+	  // create a HTML element for each feature
+	  var el = document.createElement('div');
+	  el.className = 'marker';
+
+	  // make a marker for each feature and add to the map
+	  new mapboxgl.Marker(el)
+	  .setLngLat(marker.geometry.coordinates)
+	  .addTo(map);
+	});
+}
+
+
 $(document).on('turbolinks:load', function () {
 	bindFormClickListeners();
-	startTimer();
+	updateUnread();
+	generateMap();
+	// startTimer();
 });
 
 

@@ -3,7 +3,7 @@ class GamesController < ApplicationController
   before_action :authenticate_user!
   before_action :find_invitee, only: [:invite, :uninvite]
   before_action :find_game, only: [:show, :actions, :update, :invite, :cancel_action,
-                                   :uninvite, :send_invites, :join, :destroy, :timer_update]
+                                   :uninvite, :send_invites, :join, :destroy, :map, :timer_update]
 
   def index
   end
@@ -85,8 +85,6 @@ class GamesController < ApplicationController
       redirect_to game_path(@game)
     end
   end
-
-
 
   def actions
     find_player(@game)
@@ -204,19 +202,24 @@ class GamesController < ApplicationController
       flash[:danger] = 'This is not an allowed action'
     end
 
-    @player.update(status: 'updated', timer: 30)
+    @player.update(status: 'updated')
+    NewPlayerBroadcastJob.perform_now @player.game_id, 'player_updated', @player.id
 
     if @game.players.where(status: 'updated').size == 3
       
       @game.turn_number += 1
       @game.save
       next_turn(@game)
-
+      
       @game.players.each do |player|
         player.update(status: 'pending_action') unless player.winner == false
       end
 
+      NewPlayerBroadcastJob.perform_now @player.game_id,'next_turn'
+
     end 
+
+    @player.update(timer: TIMER_START)
 
     redirect_to game_path(@game)
   end 
@@ -229,6 +232,12 @@ class GamesController < ApplicationController
   def get_current_user
     @user = current_user
     render json: {id: @user.id}
+  end
+
+  def map
+    find_player(@game)
+    geojson = build_geojson @game, @player
+    render json: geojson
   end
 
   def timer_update

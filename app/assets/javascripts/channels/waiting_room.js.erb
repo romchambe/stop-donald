@@ -8,19 +8,26 @@ let arrayOfGames = [];
 function subscriptionCreator (gameId) {
 	return App.cable.subscriptions.create({channel: 'WaitingRoomChannel', waiting_room: gameId}, {  
 		received: function(data) {
-			let game_id = data.game_id;
-			let playersCount = parseInt(data.players_count);  
+			if (data.event === 'player_joined') {
+				let game_id = data.game_id;
+				let playersCount = parseInt(data.players_count);  
 
-		    if (playersCount === 3) {
-		    	$("#notification-area").append('<div class="alert alert-notice"> The following game is ready to start' + 
-		    		'<a href="/games/' + game_id +'" class="btn btn-primary left">Go to game</a></div>');
-		    	$('#get-started').removeAttr('disabled');
-		    } else {
-		    	$("#notification-area").append('<div class="alert alert-info">' + data.message 
-		    		+ ' <a href="/games/' + game_id +'" class="btn btn-primary left">Go to game</a></div>');
-		    };
-		    
-		    $('#current-players').append('<tr><td>' + data.username + '</td></tr>');
+			    if (playersCount === 3) {
+			    	$("#notification-area").append('<div class="alert alert-notice"> The following game is ready to start' + 
+			    		'<a href="/games/' + game_id +'" class="btn btn-primary left">Go to game</a></div>');
+			    	$('#get-started').removeAttr('disabled');
+			    } else {
+			    	$("#notification-area").append('<div class="alert alert-info">' + data.message 
+			    		+ '<a href="/games/' + game_id +'" class="btn btn-primary left">Go to game</a></div>');
+			    };
+			    
+			    $('#current-players').append('<tr><td>' + data.username + '</td></tr>');
+
+			} else if (data.event === 'player_updated') {
+				$("#notification-area").append('<div class="alert alert-info">' + data.message + '</div>');
+			} else if (data.event === 'next_turn') {
+				window.location.reload();
+			};
 		}
 	});
 }

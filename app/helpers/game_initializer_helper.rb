@@ -1,30 +1,31 @@
 module GameInitializerHelper
+
   CITIES_INITIALIZER = {
-	New_York: {pop: 20153634},
-	Los_Angeles: {pop: 13310447},
-	Chicago: {pop: 9512999},
-	Dallas: {pop: 7233323},
-	Houston: {pop: 6772469.9}, 
-	Washington: {pop: 6131977},
-	Philadelphia: {pop: 6070500},
-	Miami: {pop: 6066387},
-	Atlanta: {pop: 5789700}, 
-	Boston: {pop: 4794447}, 
-	San_Francisco: {pop: 4679166}, 
-	Phoenix: {pop: 4661537}, 
-	Riverside: {pop: 4527837}, 
-	Detroit: {pop: 4297617}, 
-	Seattle: {pop: 3798902},
-	Minneapolis: {pop: 3551036},
-	San_Diego: {pop: 3317749}, 
-	Tampa: {pop: 3032171},
-	Denver: {pop: 2853077},
-	St_Louis: {pop: 2807002}, 
-	Baltimore: {pop: 2798886},
-	Charlotte: {pop: 2474314},
-	Orlando: {pop: 2441257},
-	San_Antonio: {pop: 2429609}, 
-	Portland: {pop: 2424955}
+	New_York: {pop: 20153634, lat:40.712775, long:-74.005973},
+	Los_Angeles: {pop: 13310447, lat:34.052234, long: -118.243685},
+	Chicago: {pop: 9512999, lat:41.878114, long:-87.629798},
+	Dallas: {pop: 7233323, lat:32.776664, long:-96.796988},
+	Houston: {pop: 6772469.9, lat:29.760427, long:-95.369803}, 
+	Washington: {pop: 6131977, lat:38.907192, long:-77.036871},
+	Philadelphia: {pop: 6070500, lat:39.952584, long:-75.165222},
+	Miami: {pop: 6066387, lat:25.761680, long:-80.191790},
+	Atlanta: {pop: 5789700, lat:33.748995, long:-84.387982}, 
+	Boston: {pop: 4794447, lat:42.360082, long:-71.058880}, 
+	San_Francisco: {pop: 4679166, lat:37.774929, long:-122.419416}, 
+	Phoenix: {pop: 4661537, lat:33.448377, long:-112.074037}, 
+	Riverside: {pop: 4527837, lat:40.760779, long:-111.891047}, 
+	Detroit: {pop: 4297617, lat:42.331427, long:-83.045754}, 
+	Seattle: {pop: 3798902, lat:47.606209, long:-122.332071},
+	Minneapolis: {pop: 3551036, lat:44.977753, long:-93.265011},
+	San_Diego: {pop: 3317749, lat: 32.715738, long:-117.161084}, 
+	Tampa: {pop: 3032171, lat: 27.950575, long: -82.457178},
+	Denver: {pop: 2853077, lat:39.739236, long:-104.990251},
+	St_Louis: {pop: 2807002, lat:38.627003, long: -90.199404}, 
+	Baltimore: {pop: 2798886, lat:39.290385, long:-76.612189},
+	Charlotte: {pop: 2474314, lat:35.227087, long:-80.843127},
+	Orlando: {pop: 2441257, lat: 28.538335, long: -81.379236},
+	San_Antonio: {pop: 2429609, lat: 29.424122, long: -98.493628}, 
+	Portland: {pop: 2424955, lat:45.523062, long: -122.676482}
   }
 
   CITIES_TO_BE_CONQUERED = [:Houston, :Dallas, :Atlanta, :Tampa, :Orlando, :Miami, 
@@ -44,7 +45,7 @@ module GameInitializerHelper
   US_LAUNCH_SITES = {
   	usa: {
   	  alaska: {operational: true, id: 25}, hawaii: {operational: true, id: 26}, iowa: {operational: true, id: 27}, 
-  	  arctic: {operational: true, id: 28}, guam: {operational: true, id: 29}, aleoutians: {operational: true, id: 30}
+  	  dakota: {operational: true, id: 28}, porto_rico: {operational: true, id: 29}, aleoutians: {operational: true, id: 30}
   	}
   }
 

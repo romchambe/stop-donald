@@ -15,7 +15,7 @@ class Game < ApplicationRecord
   scope :not_created_by, ->(user) { where.not(creator_id: user) }
   scope :pending, -> { where(status: "pending") }
   scope :ongoing, -> { where(status: "ongoing") }
-  scope :finished, -> { where(status: "finished") }
+  scope :not_finished, -> { where.not(status: "finished") }
 
   def to_param
   	obfuscated_id = Hashids.new("l'art de la guerre", 8)

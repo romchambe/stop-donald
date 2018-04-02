@@ -4,6 +4,9 @@
     <title>StopDonald</title>
     <%= csrf_meta_tags %>
 
+    <!-- Responsive viewport -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
     <!-- Global site tag (gtag.js) - Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-114626786-1"></script>
     <script>
@@ -12,9 +15,16 @@
       gtag('js', new Date());
       gtag('config', 'UA-114626786-1');
     </script>
-
+    
+    <!-- Styles and scripts -->
     <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload' %>
     <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>
+
+    <!-- Mapbox links -->
+    <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.44.1/mapbox-gl.js'></script>
+    <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.44.1/mapbox-gl.css' rel='stylesheet' />
+
+    <!-- Websocket -->
     <%= action_cable_meta_tag %>
   </head>
 

@@ -8,10 +8,10 @@
 	</tr>
 </thead>
 <tbody>
-	<% Game.created_by(current_user).each do |game| %>
+	<% Game.created_by(current_user).not_finished.each do |game| %>
 		<tr>
 			<td><%= game.creator.username %></td>
-			<td>Todo</td>
+			<td><%= game.status.capitalize %></td>
 			<td><%= game.created_at %></td>
 			<td>	
 				<ul class='button-list'>
@@ -27,10 +27,10 @@
 			</td>
 		</tr>
 	<% end %>
-	<% current_user.games.not_created_by(current_user).each do |game| %>
+	<% current_user.games.not_created_by(current_user).not_finished.each do |game| %>
 		<tr>
 			<td><%= game.creator.username %></td>
-			<td>Todo</td>
+			<td><%= game.status.capitalize %></td>
 			<td><%= game.created_at %></td>
 			<td>
 				<%= link_to "Resume", game_path(game), class: "btn btn-primary", data: {game: game.id, status: game.status} %>

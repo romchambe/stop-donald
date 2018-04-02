@@ -48,13 +48,13 @@ ActiveRecord::Schema.define(version: 20180328144408) do
   end
 
   create_table "messages", force: :cascade do |t|
-    t.integer "player_id_id"
+    t.integer "player_id"
     t.text "content"
     t.integer "turn_number"
     t.boolean "read"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["player_id_id"], name: "index_messages_on_player_id_id"
+    t.index ["player_id"], name: "index_messages_on_player_id"
   end
 
   create_table "players", force: :cascade do |t|

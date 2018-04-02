@@ -4,8 +4,8 @@
 //= require_tree .
 
 let invitees = [];
-let gameInviteId = '';
-let userId = '';
+let gameInviteId;
+let userId;
 
 function inviteSubscriptionCreator(id) {
 	return App.cable.subscriptions.create({channel: 'GameInvitesChannel', user_id: id}, {  

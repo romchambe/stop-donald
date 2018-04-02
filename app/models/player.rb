@@ -9,6 +9,6 @@ class Player < ApplicationRecord
   serialize :spies
 
   after_create do |player|
-  	NewPlayerBroadcastJob.perform_now player.game_id, player.user_id
+  	NewPlayerBroadcastJob.perform_now player.game_id, 'player_joined', player.id 
   end 
 end

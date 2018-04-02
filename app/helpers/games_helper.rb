@@ -1,6 +1,8 @@
 module GamesHelper
   include GameInitializerHelper
   
+  TIMER_START = 60
+
   def random_game_available?
   	Game.created_by(User.find(1)).pending.empty?
   end
@@ -50,7 +52,7 @@ module GamesHelper
                     engaged_forces: {aircrafts: 0, tanks: 0}, 
                     spies: SPIES_INITIALIZER[countries[i]], 
                     winner: nil,
-                    timer: 30)
+                    timer: TIMER_START)
     end
 
     #Trump location is randomized
@@ -144,19 +146,36 @@ module GamesHelper
     end
 
     possible_conquests = cities_to_be_conquered(game)
+    conquered_this_turn = []
 
     if rebels_power > 0.5 * (rebels_power + us_army_power) && rebels_power <= 0.6 * (rebels_power + us_army_power)
       1.times do 
-        game.cities[possible_conquests.slice!(0)][:conquered] = true
+        conquered = possible_conquests.slice!(0)
+        game.cities[conquered][:conquered] = true
+        conquered_this_turn << conquered
       end
     elsif rebels_power > 0.6 * (rebels_power + us_army_power) && rebels_power <= 0.8 * (rebels_power + us_army_power)
       2.times do 
-        game.cities[possible_conquests.slice!(0)][:conquered] = true
+        conquered = possible_conquests.slice!(0)
+        game.cities[conquered][:conquered] = true
+        conquered_this_turn << conquered
       end
     elsif rebels_power > 0.8 * (rebels_power + us_army_power) 
       3.times do 
-        game.cities[possible_conquests.slice!(0)][:conquered] = true
+        conquered = possible_conquests.slice!(0)
+        game.cities[conquered][:conquered] = true
+        conquered_this_turn << conquered
       end
+    end
+
+    if !conquered_this_turn.empty?
+      conquered_this_turn = conquered_this_turn.join(', ')
+
+      game.players.each do |player|
+        Message.create(player_id: player.id, read: false, 
+                       content:"#{conquered_this_turn} were conquered by the rebels and their allies during the last turn",
+                       turn_number: game.turn_number)
+      end 
     end
 
     game.save
@@ -197,8 +216,15 @@ module GamesHelper
         player = game.players.find_by(country: country)
         if rand_comparator?(0.3)
           kill_spy(player, spy_name, trump_city, game)
-          #send message that spy has been killed and trump has moved
+          Message.create(player_id: player.id, read: false, 
+                         content:"#{spy_name} was killed after having found Trump in #{trump_city}, and Trump moved to another city",
+                         turn_number: game.turn_number)
+        else 
+          Message.create(player_id: player.id, read: false, 
+                         content:"#{spy_name} found Trump in #{trump_city}, but Trump escaped!",
+                         turn_number: game.turn_number)
         end
+
       end
 
       trump_moves(game)
@@ -209,10 +235,11 @@ module GamesHelper
 
     else
 
-      spies_countries = game.cities[trump_city][:spies].keys
-      spies_countries.each do |country|
-        
-          #send message that trump was located
+      game.cities[trump_city][:spies].each do |country, spy_name|
+        player = game.players.find_by(country: country)
+        Message.create(player_id: player.id, read: false, 
+                       content:"#{spy_name} located Trump in #{trump_city}, don't let him escape!!",
+                       turn_number: game.turn_number)
     
       end 
 
@@ -227,6 +254,9 @@ module GamesHelper
       array_of_spies.each do |spy_hash|
         if rand_comparator?(0.1)
           kill_spy(player, spy_hash[:name], spy_hash[:city], game)
+          Message.create(player_id: player.id, read: false, 
+                       content:"#{spy_hash[:name]} was killed in action by the CIA in #{spy_hash[:city]} without finding Trump",
+                       turn_number: game.turn_number)
         end
       end 
     end
@@ -312,5 +342,29 @@ module GamesHelper
     trump_location = rand(possible_locations.length)
     game.cities[possible_locations[trump_location]][:trump] = true 
     game.save  
+  end
+
+  def build_geojson(game,player)
+    geojson = []
+    CITIES_INITIALIZER.each do |name, properties|
+
+      spy_name = game.cities[name][:spies][player.country.to_sym]
+      geojson << {
+        type: 'Feature',
+        geometry: {
+          type: 'Point',
+          coordinates: [properties[:long], properties[:lat]]
+        },
+        properties: {
+          name: name,
+          population: properties[:pop], 
+          destroyed: game.cities[name][:destroyed], 
+          conquered: game.cities[name][:conquered],
+          spies: spy_name
+        }
+      }
+      puts name
+    end
+    return geojson 
   end
 end
