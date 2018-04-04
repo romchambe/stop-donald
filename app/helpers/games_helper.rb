@@ -152,19 +152,19 @@ module GamesHelper
       1.times do 
         conquered = possible_conquests.slice!(0)
         game.cities[conquered][:conquered] = true
-        conquered_this_turn << conquered
+        conquered_this_turn << conquered.to_s.humanize.capitalize
       end
     elsif rebels_power > 0.6 * (rebels_power + us_army_power) && rebels_power <= 0.8 * (rebels_power + us_army_power)
       2.times do 
         conquered = possible_conquests.slice!(0)
         game.cities[conquered][:conquered] = true
-        conquered_this_turn << conquered
+        conquered_this_turn << conquered.to_s.humanize.capitalize
       end
     elsif rebels_power > 0.8 * (rebels_power + us_army_power) 
       3.times do 
         conquered = possible_conquests.slice!(0)
         game.cities[conquered][:conquered] = true
-        conquered_this_turn << conquered
+        conquered_this_turn << conquered.to_s.humanize.capitalize
       end
     end
 
@@ -346,6 +346,7 @@ module GamesHelper
 
   def build_geojson(game,player)
     geojson = []
+    
     CITIES_INITIALIZER.each do |name, properties|
 
       spy_name = game.cities[name][:spies][player.country.to_sym]
@@ -356,15 +357,35 @@ module GamesHelper
           coordinates: [properties[:long], properties[:lat]]
         },
         properties: {
+          type: 'City',
+          id: game.cities[name][:id],
           name: name,
+          name_human: name.to_s.humanize.titleize,
           population: properties[:pop], 
           destroyed: game.cities[name][:destroyed], 
           conquered: game.cities[name][:conquered],
           spies: spy_name
         }
       }
-      puts name
     end
+
+    US_LAUNCH_SITES[:usa].each do |name, properties|
+      geojson << {
+        type: 'Feature',
+        geometry: {
+          type: 'Point',
+          coordinates: [properties[:long], properties[:lat]]
+        },
+        properties: {
+          type: 'Launch Site',
+          id: properties[:id],
+          name: name,
+          name_human: name.to_s.humanize.titleize,
+          destroyed: properties[:operational]
+        }
+      }
+    end 
+
     return geojson 
   end
 end

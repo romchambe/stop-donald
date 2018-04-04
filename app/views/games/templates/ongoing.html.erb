@@ -1,196 +1,179 @@
 <div class='container-fluid' id='main-container'>
-  <div class="row align-items-center" data-game='<%= @game.id %>' id='game-header'>
-    <div class="col-md-4">
-      <div class="row ">
-        <div class="col header bold">
-          Week <%= @game.turn_number %> -- Time left: <span id='timer'><%= @player.timer %></span> seconds
+  <form action=<%= game_path(@game)%> method="post" class='cities-form' id='cities-form'>
+    <%= hidden_field_tag :authenticity_token, form_authenticity_token -%>
+    <input name="_method" type="hidden" value="patch" />
+    <div class="row align-items-center" data-game='<%= @game.id %>' id='game-header'>
+      <div class="col-md-4">
+        <div class="row ">
+          <div class="col header bold">
+            Week <%= @game.turn_number %> -- Time left: <span id='timer'><%= @player.timer %></span> seconds
+          </div>
+          
         </div>
-        
-      </div>
-      <div class="row">
-        <div class="col center">
-          <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modal-action-selection" id='action-selection'>
-            Available actions
-          </button>
+        <div class="row">
+          <div class="col center">
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modal-action-selection" id='action-selection'>
+              Available actions
+            </button>
 
-          <%= link_to 'Cancel action', cancel_action_path(@game), method: :delete, 
-          class: "btn btn-danger hidden", id:'action-cancel' %>
-        </div>
-        
-      </div>
-    </div>
-    <div class="col-md-6">
-      <div class="container game-info">
-        <div class="row">
-          <div class="bold col-md-2 vertical-center">
-            Rebels
-          </div>
-          <div class='col-md-4'>
-            <% @game.rebels_forces.each do |type, number| %>
-              <div class="row">
-                <div class="col"><%= type.capitalize %></div>
-                <div class="col"><%= number %></div>
-              </div>  
-            <% end %>
-          </div>
-          <div class="bold col-md-2 vertical-center">
-            US Army
-          </div>
-          <div class='col-md-4'>
-            <% @game.us_army_forces.each do |type, number| %>
-              <div class="row">
-                <div class="col"><%= type.capitalize %></div>
-                <div class="col"><%= number %></div>
-              </div>  
-            <% end %>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="col-md-2">
-      <div id="message-button">
-        <i class="material-icons md-28" id='message-icon'>message</i>
-        <div id="unread-counter"></div>
-      </div>
-      <div id="message-button-close">
-        <i class="material-icons md-36" id='message-icon'>keyboard_arrow_up</i>
-        <div id="unread-counter-close"></div>
-      </div>
-      <div id="message-container">
-        <div class="container-fluid message-dialog">
-        <% @player.messages.each do |message| %>
-          <div class="message">
-            <div class="message-info spaced">
-              
-              <div class="bold">Week <%= message.turn_number %></div>
-              <i class="material-icons md-18 <%= message.read ? 'read' : 'unread' %>" 
-                 data-message='<%= message.id %>'>
-               remove_red_eye
-              </i>
-            </div>
-            <div class="message-content">
-              <%= message.content %>
-            </div>
-          </div>
-        <% end %>
-        </div>  
-      </div>
-    </div>
+            <input type="submit" value="Update" name="commit" 
+            class="btn btn-primary hidden" id='cities-submit' disabled />
 
-  </div>
-  <div class="row">
-    <div class="col-md-4">
-      <div class="player-info" id="general">
-        <div class="row">
-          <div class="col-md-12 spaced">
-            <div class="bold">
-              Playing: <%= @player.country.capitalize %>    
+            <%= link_to 'Cancel action', cancel_action_path(@game), method: :delete, 
+            class: "btn btn-danger hidden", id:'action-cancel' %>
+          </div>
+          
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="container game-info">
+          <div class="row">
+            <div class="bold col-md-2 vertical-center">
+              Rebels
             </div>
-            <div>
-              <%= @player.lost_cities %> / <%= (@player.country == 'china') ? 9 : 5 %>  cities lost
+            <div class='col-md-4'>
+              <% @game.rebels_forces.each do |type, number| %>
+                <div class="row">
+                  <div class="col"><%= type.capitalize %></div>
+                  <div class="col"><%= number %></div>
+                </div>  
+              <% end %>
+            </div>
+            <div class="bold col-md-2 vertical-center">
+              US Army
+            </div>
+            <div class='col-md-4'>
+              <% @game.us_army_forces.each do |type, number| %>
+                <div class="row">
+                  <div class="col"><%= type.capitalize %></div>
+                  <div class="col"><%= number %></div>
+                </div>  
+              <% end %>
             </div>
           </div>
         </div>
-        <br>
-        <div class="row">
-          <div class="bold col-md-3 vertical-center">
-            Launch sites
-          </div>
-          <div class='col-md-9'>
-            <% @player.launch_sites.each do |name, attributes| %>
-            <div class="row">
-              <div class='col'>
-                <%= name.capitalize %>
-              </div> 
-              <div class='col'>
-                <%= attributes[:operational] ? 'Operational' : 'Destroyed' %>
-              </div>         
+      </div>
+      <div class="col-md-2">
+        <div id="message-button">
+          <i class="material-icons md-28" id='message-icon'>message</i>
+          <div id="unread-counter"></div>
+        </div>
+        <div id="message-button-close">
+          <i class="material-icons md-36" id='message-icon'>keyboard_arrow_up</i>
+          <div id="unread-counter-close"></div>
+        </div>
+        <div id="message-container">
+          <div class="container-fluid message-dialog">
+          <% @player.messages.each do |message| %>
+            <div class="message">
+              <div class="message-info spaced">
+                
+                <div class="bold">Week <%= message.turn_number %></div>
+                <i class="material-icons md-18 <%= message.read ? 'read' : 'unread' %>" 
+                   data-message='<%= message.id %>'>
+                 remove_red_eye
+                </i>
+              </div>
+              <div class="message-content">
+                <%= message.content %>
+              </div>
             </div>
-            <% end %>
+          <% end %>
           </div>  
         </div>
       </div>
-      <div class="player-info" id="spies">
-        <div class="row">
-          <div class="bold col-md-3 vertical-center">
-            Spies
-          </div>
-          <div class='col-md-9'>
-          <% @player.spies.each do |id, attributes| %>
-            <div class="row">
-              <div class='col'>
-                <%= attributes[:name] %>              
+
+    </div>
+    <div class="row">
+      <div class="col-md-4">
+        <div class="player-info" id="general">
+          <div class="row">
+            <div class="col-md-12 spaced">
+              <div class="bold">
+                Playing: <%= @player.country.capitalize %>    
               </div>
-              <div class='col'>
-                <%= attributes[:operational] ? 'Operational' : 'Killed in action' %>
+              <div>
+                <%= @player.lost_cities %> / <%= (@player.country == 'china') ? 9 : 5 %>  cities lost
               </div>
             </div>
-            
-          <% end %>
           </div>
-        </div>
-      </div>
-      <div class="player-info" id="available-forces">
-        <div class="row">
-          <div class="bold col-md-3 vertical-center">
-            Available forces
-          </div>
-          <div class='col-md-9'>
-          <% @player.available_forces.each do |type, number| %>
-            <div class="row">
-              <div class="col"><%= type.capitalize %></div>
-              <div class="col"><%= number %></div>
+          <br>
+          <div class="row">
+            <div class="bold col-md-3 vertical-center">
+              Launch sites
+            </div>
+            <div class='col-md-9'>
+              <% @player.launch_sites.each do |name, attributes| %>
+              <div class="row">
+                <div class='col'>
+                  <%= name.capitalize %>
+                </div> 
+                <div class='col'>
+                  <%= attributes[:operational] ? 'Operational' : 'Destroyed' %>
+                </div>         
+              </div>
+              <% end %>
             </div>  
-          <% end %>
           </div>
         </div>
-      </div>
-      <div class="player-info" id="engaged-forces">
-        <div class="row">
-          <div class="bold col-md-3 vertical-center">Engaged forces</div>
-          <div class='col-md-9'>
-          <% @player.engaged_forces.each do |type, number| %>
-            <div class="row">
-              <div class='col'><%= type.capitalize %></div>
-              <div class='col'><%= number %></div>
+        <div class="player-info" id="spies">
+          <div class="row">
+            <div class="bold col-md-3 vertical-center">
+              Spies
             </div>
-          <% end %>
+            <div class='col-md-9'>
+            <% @player.spies.each do |id, attributes| %>
+              <div class="row">
+                <div class='col'>
+                  <%= attributes[:name] %>              
+                </div>
+                <div class='col'>
+                  <%= attributes[:operational] ? 'Operational' : 'Killed in action' %>
+                </div>
+              </div>
+              
+            <% end %>
+            </div>
+          </div>
+        </div>
+        <div class="player-info" id="available-forces">
+          <div class="row">
+            <div class="bold col-md-3 vertical-center">
+              Available forces
+            </div>
+            <div class='col-md-9'>
+            <% @player.available_forces.each do |type, number| %>
+              <div class="row">
+                <div class="col"><%= type.capitalize %></div>
+                <div class="col"><%= number %></div>
+              </div>  
+            <% end %>
+            </div>
+          </div>
+        </div>
+        <div class="player-info" id="engaged-forces">
+          <div class="row">
+            <div class="bold col-md-3 vertical-center">Engaged forces</div>
+            <div class='col-md-9'>
+            <% @player.engaged_forces.each do |type, number| %>
+              <div class="row">
+                <div class='col'><%= type.capitalize %></div>
+                <div class='col'><%= number %></div>
+              </div>
+            <% end %>
+            </div>
           </div>
         </div>
       </div>
-    </div>
 
 
-    <div class="col-md-8">
-      <div id='map' ></div>
-
-      <div class='map' id="cities">
-        <form action=<%= game_path(@game)%> method="post" class='cities-form' id='cities-form'>
-          <%= hidden_field_tag :authenticity_token, form_authenticity_token -%>
-          <input name="_method" type="hidden" value="patch" />
-          <% @game.launch_sites.each do |name, attributes| %>
-            <input type="checkbox" name="targets[<%= attributes[:id] %>]" value="<%= name %>" class='city-input' 
-            id='city-id-<%= attributes[:id] %>' disabled>
-              Launch Site <%= name.capitalize %> / <%= 'ok' unless !attributes[:operational] %> 
-            <br>
-
-          <% end %>
-          <% @game.cities.each do |city, attributes| %>
-            
-            <input type="checkbox" name="targets[<%= attributes[:id] %>]" value="<%= city %>" class='city-input' 
-            id='city-id-<%= attributes[:id] %>' disabled>
-              <%= city %>: <%= attributes[:pop] %> / 
-              <%= attributes[:spies][@player.country.to_sym].nil? ? 'no spies' : attributes[:spies][@player.country.to_sym] %> / 
-              <%= attributes[:destroyed] ? 'Annihilated' : 'ok' %> / 
-              <%= attributes[:conquered] ? 'Conquered' : 'ok' %>
-            <br>
-          <% end %>
-          <input type="submit" value="Update" name="commit" 
-          class="btn btn-primary hidden" id='cities-submit' disabled />
-        </form>
+      <div class="col-md-8">
+        <div id='map' >
+        
+        </div>
       </div>
     </div>
-  </div>
+  </form>
   <div class="modal fade" id="modal-action-selection">
     <div class="modal-dialog">
       <div class="modal-content">
@@ -235,7 +218,7 @@
               <input name="_method" type="hidden" value="patch" />
 
             </form>
-            <div class="alert alert-info hidden" id="modal-notification-area">
+            <div class="alert alert-info hidden top-margin" id="modal-notification-area">
     
             </div>
           </div>

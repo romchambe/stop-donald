@@ -1,6 +1,13 @@
 <div class='container-fluid vertically-determined' id='main-container'>
 	<div class="container full-vertical-center bold">
-		This game is finished
+		<% if @game.players.where(winner: true).empty? %>
+			None of the player found and stopped Trump. Earth is doomed to read (and - sometimes - laugh with) Donald Trump's tweet until his death
+		<% else %>
+			Thanks to <%= @game.players.where(winner: true)[0].capitalize %>'s clever strategy, the world avoided nuclear apocalypse and years of Trump's tweets! 
+		<% end %>
+	</div>
+	<div class="center">
+		<%= link_to 'Back to your games', games_path, class: 'btn btn-primary form-submit' %>
 	</div>
 </div>
 

@@ -1,19 +1,31 @@
 <div class='container' id='main-container'>	
 	<div class="container" data-game='<%= @game.id %>'>
-		<h3 class="center">Each seconds counts</h3>
 
-		<p class='center'>
-			On the night of the 3rd November 2020, after losing the US presidential election against Michelle Obama, Donald Trump announced in a tweet that he would "rip the f****** world apart with (his) big nuclear button if Michelle Obama is inaugurated President"
+		<p class="center content-section">
+			To prevent the advent of an era of terror, the world's main power have <strong> 12 weeks until the 21st Jan 2021 </strong>to thwart Trump's nefarious plans. Your mission is be to find him and put him out of business.
 		</p>
 
-		<p class="center">
-			To prevent the advent of an era of terror, the countdown to stop him before the 20th Jan 2021 has begun. Each turn, you will have the choice between 4 actions to try to kill Trump.
-		</p>
-		<p class="center">
+		<p class="center top-margin content-section">
 			<button class="btn btn-primary" id="get-started" disabled="<%= @game.players.size == 3 ? true : nil %>">Let's get started! </button>
-
 		</p>
-	</div>
+		
+	
+		<h3>Special powers</h3>
+		<div class="row top-margin">
+			<div class="col-sm-4 bold">China - Emerging nuclear power</div> 
+			<div class="col-sm-8">China starts with 5 launch sites, can lose 9 cities instead of 5</div>
+		</div>
+		<div class="row top-margin">
+			<div class="col-sm-4 bold">Europe - Modern military</div> 
+			<div class="col-sm-8">Europe can send 1/4 of its army in reinforcement per turn instead of 1/6</div>
+		</div>
+		<div class="row top-margin content-section">
+			<div class="col-sm-4 bold">Russia - KGB networks</div> 
+			<div class="col-sm-8">Russia starts with 3 spies instead of 2</div>
+		</div>
 
+		
+	</div>
+	<div class="container"><h3>Players</h3></div>
 	<%= render 'games/templates/pending_game_table' %>
 </div>

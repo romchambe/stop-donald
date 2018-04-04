@@ -1,5 +1,6 @@
 <div class='container' id='main-container'>	
-	<h1>Invite your friends - Status <%= @game.status %></h1>
+
+	<h1 class='content-section center'>Invite your friends</h1>
 
 	<table class="table table-hover" id="invite-friends">
 		<thead>
@@ -14,10 +15,10 @@
 		<tbody>
 			<% User.all_except(current_user).each do |invitee| %>
 				<tr>
-					<td><%= invitee.username %></td>
-					<td>TBD</td>
-					<td><%= invitee.created_at%></td>
-					<td>
+					<td class="center"><%= invitee.username %></td>
+					<td class="center">TBD</td>
+					<td class="center"><%= invitee.created_at%></td>
+					<td class="center">
 						<%= link_to uninvite_path(invitee_id: invitee.id), method: :delete, class: "hidden", 
 						id: "uninvite-player-#{invitee.id}", data: {user: invitee.id, uninvite:"true"} do %>
 							<i class="material-icons">close</i>
@@ -36,7 +37,8 @@
 			<% end %>
 		</tbody>
 	</table>
-
-	<%= link_to 'Send invites', send_invites_path(@game), method: :post, 
-		class: "btn btn-primary", id: 'send-invites', data: {game: @game.id} %>
+	<div class="center">
+		<%= link_to 'Send invites', send_invites_path(@game), method: :post, 
+		class: "btn btn-primary top-margin form-submit", id: 'send-invites', data: {game: @game.id} %>
+	</div>
 </div>

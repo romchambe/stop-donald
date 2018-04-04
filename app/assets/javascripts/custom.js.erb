@@ -4,7 +4,7 @@ let countdown;
 
 
 let modalFormContent = {
-	'recruit':'<p>What will be the name of this new spy?</p><input id="spy-name" name="spy[name]" type="text" /><input type="submit" class="btn btn-primary" value="Update" name="commit" id="modal-submit">', 
+	'recruit':'<p>What will be the name of this new spy?</p><div><input class= "form-field" id="spy-name" name="spy[name]" type="text" /></div><input type="submit" class="btn btn-primary top-margin" value="Update" name="commit" id="modal-submit">', 
 	'reinforce':'<input type="submit" class="btn btn-primary" value="Update" name="commit" id="modal-submit">' 
 };
 
@@ -52,31 +52,103 @@ function bindFormClickListeners () {
 		});
 		updateUnread();
  	});
+
 }
 
 function actionResponse (data) {
 	let user_action = data.user_action;
 	let action;
 
+	
+	function bindActiveClickListeners(element, max) {
+
+
+		$(element).on('click', function() {
+			if (checkNumberOfSelectedCities(max)) { 
+
+				let targetId = $(this).attr('id');
+				let targetName = this.dataset.name;
+
+				$(this).removeClass('active');
+				$(this).addClass('selected');
+				
+				$('#cities-form').append('<input type="hidden" name="targets[' + targetId + ']"' + 'id="target-' + targetId + '" value="' + targetName + '">');
+				$(this).off('click');
+
+				bindSelectedClickListeners(this, max);
+			} else {
+				$("#notification-area").removeClass('hidden');
+				$('#notification-area').append('<div class="alert alert-notice">You cannot select more than ' + max + ' cities/launch sites </div>');
+			};
+		});
+	}
+
+	function bindSelectedClickListeners(element, max) {
+		$(element).on('click', function() {
+			let targetSelector = "#target-" + $(this).attr('id');
+			$(targetSelector).remove();
+
+			$(this).removeClass('selected');
+    		$(this).addClass('active');
+    		
+    		$("#notification-area").empty();
+    		
+    		$(this).off('click');
+    		
+    		bindActiveClickListeners(this, max);
+		});
+	}
+
+	
+	
 	if (data.selector === '#cities') {
-		for (var key in data.msg) {
-    		if (data.msg.hasOwnProperty(key)) {
-    			el = '#city-id-' + data.msg[key]["id"]; 
-    			$(el).removeAttr('disabled');
-			}; 
-		};
-
-		$('#modal-action-selection').modal('toggle');
-
-		action = $('#cities-form').attr('action') + '?user_action=' + user_action;
-		$('#cities-form').attr('action', action);
-		
+		$("#modal-action-selection").modal('toggle');
 		$('#cities-submit').removeClass('hidden');
 		$('#cities-submit').removeAttr('disabled');
 
-		$('.city-input').on('click', function() {
-			checkNumberOfSelectedCities(data.max);
+		action = $('#cities-form').attr('action') + '?user_action=' + user_action;
+		$('#cities-form').attr('action', action);
+
+		for (var key in data.msg) {
+    		if (data.msg.hasOwnProperty(key)) {
+    			el = '#location-' + data.msg[key]["id"]; 
+    			$(el).children().removeClass('disabled');
+    			$(el).children().addClass('active');
+			}; 
+		};
+
+		$('.active').each( function(index, element) {
+			bindActiveClickListeners(element, data.max);
 		});
+		// $('.location-input.active').on('click', function() {
+			
+		// 	if (checkNumberOfSelectedCities(data.max)){ 
+
+		// 		let targetId = $(this).attr('id');
+		// 		let targetName = this.dataset.name;
+
+		// 		$(this).removeClass('active');
+		// 		$(this).addClass('selected');
+				
+		// 		$('#cities-form').append('<input type="hidden" name="targets[' + targetId + ']"' + 
+		// 								 'id="target-' + targetId + '" value="' + targetName + '">');
+				
+		// 		$(this).on('click', function() {
+		// 			let targetSelector = '#target-' + $(this).attr('id');
+
+		// 			$(this).removeClass('selected');
+		//     		$(this).addClass('active');
+		//     		$("#notification-area").empty();
+		//     		$(targetSelector).remove();
+		// 		});
+
+		// 	} else {
+		// 		$("#notification-area").removeClass('hidden');
+		// 		$('#notification-area').append('<div class="alert alert-notice">You cannot select more than ' 
+		// 										+ data.max + ' cities/launch sites </div>');
+		// 	};
+			
+		// });
 
 	} else if (data.selector === '#modal-form') {
 		$('#modal-actions').addClass('hidden');
@@ -114,10 +186,10 @@ function checkSpyNameLength () {
 }
 
 function checkNumberOfSelectedCities(max) {
-	if ($('.city-input:checked').length > max) {
-		$("#notification-area").removeClass('hidden');
-		$('#notification-area').append('<div class="alert alert-notice">You cannot select more than ' + max + ' cities/launch sites </div>');
-		event.preventDefault();
+	if ($('.selected').length >= max) {
+		return false;
+	} else {
+		return true;
 	}
 }
 
@@ -191,17 +263,62 @@ function generateMap () {
 }
 
 function populateMap(arrayOfFeatures,map) {
-	
-	var geojson = {
+
+	let geojson = {
   	  type: 'FeatureCollection',
   	  features: arrayOfFeatures
   	};
-  	console.log(geojson);
 	geojson.features.forEach(function(marker) {
-	  // create a HTML element for each feature
-	  var el = document.createElement('div');
-	  el.className = 'marker';
+	  let el = document.createElement('div');
+	  let pointId = marker.properties.id;
+	  $(el).addClass('pointer');
+	  $(el).attr('id', 'location-' + pointId);
 
+
+	  if (marker.properties.type === 'City' && marker.properties.destroyed) {
+	  	$(el).append('<i class="material-icons location-input destroyed">location_city</i>');
+	  } else if (marker.properties.type === 'City' && marker.properties.conquered) {
+	  	$(el).append('<i class="material-icons location-input destroyed">flag</i>');
+	  } else if (marker.properties.type === 'City' && marker.properties.spies) {
+	  	$(el).append('<i class="material-icons location-input disabled">remove_red_eye</i>');
+	  } else if (marker.properties.type === 'City') {
+	  	$(el).append('<i class="material-icons location-input disabled">location_city</i>');
+	  } else if (marker.properties.type === 'Launch Site' & marker.properties.operational) {
+	  	$(el).append('<i class="material-icons location-input destroyed">gps_off</i>');
+	  } else if (marker.properties.type === 'Launch Site') {
+	  	$(el).append('<i class="material-icons location-input disabled">gps_fixed</i>');
+	  }
+
+	 
+
+	  $(el).children().attr('id', pointId);
+	  $(el).children().attr('data-name', marker.properties.name);
+
+	  let popup = new mapboxgl.Popup({
+          closeButton: false,
+          closeOnClick: false
+    	});
+	  
+	  let popupContent;
+	  if (marker.properties.spies) {
+	  	popupContent = '<div class="bold">' + marker.properties.type + '</div><div class="full-width">' + marker.properties.name_human + '</div>'
+  	  			 		 + '<div class="full-width">' + marker.properties.spies + '</div>';
+	  } else {
+	  	popupContent = '<div class="bold">' + marker.properties.type + '</div><div class="full-width">' + marker.properties.name_human + '</div>';
+	  };
+	  
+
+	  el.addEventListener('mouseenter', function() { 
+    	popup.setLngLat(marker.geometry.coordinates)
+  	  	.setHTML(popupContent)
+	  	.addTo(map);
+   		}
+	  ); 
+
+	  el.addEventListener('mouseleave', function() {
+	  	popup.remove();
+	  });
+	  
 	  // make a marker for each feature and add to the map
 	  new mapboxgl.Marker(el)
 	  .setLngLat(marker.geometry.coordinates)
@@ -214,7 +331,7 @@ $(document).on('turbolinks:load', function () {
 	bindFormClickListeners();
 	updateUnread();
 	generateMap();
-	// startTimer();
+	startTimer();
 });
 
 
