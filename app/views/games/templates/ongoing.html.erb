@@ -34,8 +34,8 @@
             <div class='col-md-4'>
               <% @game.rebels_forces.each do |type, number| %>
                 <div class="row">
-                  <div class="col"><%= type.capitalize %></div>
-                  <div class="col"><%= number %></div>
+                  <div class="col-6"><%= type.capitalize %></div>
+                  <div class="col-6"><%= number %></div>
                 </div>  
               <% end %>
             </div>
@@ -45,8 +45,8 @@
             <div class='col-md-4'>
               <% @game.us_army_forces.each do |type, number| %>
                 <div class="row">
-                  <div class="col"><%= type.capitalize %></div>
-                  <div class="col"><%= number %></div>
+                  <div class="col-6"><%= type.capitalize %></div>
+                  <div class="col-6"><%= number %></div>
                 </div>  
               <% end %>
             </div>
@@ -64,20 +64,29 @@
         </div>
         <div id="message-container">
           <div class="container-fluid message-dialog">
-          <% @player.messages.each do |message| %>
+          <% if @player.messages.empty? %>
             <div class="message">
-              <div class="message-info spaced">
-                
-                <div class="bold">Week <%= message.turn_number %></div>
-                <i class="material-icons md-18 <%= message.read ? 'read' : 'unread' %>" 
-                   data-message='<%= message.id %>'>
-                 remove_red_eye
-                </i>
-              </div>
               <div class="message-content">
-                <%= message.content %>
+                You will receive messages to inform you about your spies findings, other players actions, and cities conquered by the rebels
               </div>
             </div>
+
+          <% else %>
+            <% @player.messages.each do |message| %>
+              <div class="message">
+                <div class="message-info spaced">
+                  
+                  <div class="bold">Week <%= message.turn_number %></div>
+                  <i class="material-icons md-18 <%= message.read ? 'read' : 'unread' %>" 
+                     data-message='<%= message.id %>'>
+                   remove_red_eye
+                  </i>
+                </div>
+                <div class="message-content">
+                  <%= message.content %>
+                </div>
+              </div>
+            <% end %>
           <% end %>
           </div>  
         </div>
@@ -85,6 +94,11 @@
 
     </div>
     <div class="row">
+      <div class="col-md-8">
+        <div id='map' >
+        
+        </div>
+      </div>
       <div class="col-md-4">
         <div class="player-info" id="general">
           <div class="row">
@@ -167,15 +181,11 @@
       </div>
 
 
-      <div class="col-md-8">
-        <div id='map' >
-        
-        </div>
-      </div>
+      
     </div>
   </form>
   <div class="modal fade" id="modal-action-selection">
-    <div class="modal-dialog">
+    <div class="modal-dialog" id='modal-action-dialog'>
       <div class="modal-content">
 
         <!-- Modal Header -->
@@ -187,30 +197,50 @@
             <!-- Modal body -->
         <div class="modal-body" id='modal-form'>
           <div id="modal-actions">
-            <ul class="button-list-vertical">
-              <li>
-                <button type="button" class="btn btn-primary" data-action="recruit">
-                  Recruit a new spy
-                </button>
-              </li>
-              <li>
-                <button type="button" class="btn btn-primary" data-action="mission">
-                  Place your spies
-                </button>
-              </li>
-              <li>
-                <button type="button" class="btn btn-primary" data-action="attack" 
-                        <%= can_attack?(@player.launch_sites) ? nil : 'disabled' %>>
-                  Launch a nuclear attack
-                </button>
-              </li>
-              <li>
-                <button type="button" class="btn btn-primary" data-action="reinforce"
-                        <%= can_reinforce?(@player.available_forces) ? nil : 'disabled' %>>
-                  Send reinforcements to rebels
-                </button>
-              </li>
-            </ul>
+            <div class="container-fluid">
+              <div class="row button-row">
+                <div class="col-sm-7">
+                  <button type="button" class="btn btn-primary" data-action="recruit">
+                    Recruit a new spy
+                  </button>
+                </div>
+                <div class="col-sm-5 hint">
+                  A new spy will be available next turn.
+                </div>
+              </div>
+              <div class="row button-row">
+                <div class="col-sm-7">
+                  <button type="button" class="btn btn-primary" data-action="mission">
+                    Change spies location
+                  </button>
+                </div>
+                <div class="col-sm-5 hint">
+                  If placed in a city, a spy will inform you if Trump is here, but might be killed in action.
+                </div>
+              </div>
+              <div class="row button-row">
+                <div class="col-sm-7">
+                  <button type="button" class="btn btn-primary" data-action="attack" 
+                          <%= can_attack?(@player.launch_sites) ? nil : 'disabled' %>>
+                    Launch a nuclear attack
+                  </button>
+                </div>
+                <div class="col-sm-5 hint">
+                  A city/launch site will be destroyed and Trump killed if the right city is targeted. Beware, Trump will retaliate as long as US have launch sites. 
+                </div>
+              </div>
+              <div class="row button-row">
+                <div class="col-sm-7">
+                  <button type="button" class="btn btn-primary" data-action="reinforce"
+                          <%= can_reinforce?(@player.available_forces) ? nil : 'disabled' %>>
+                    Send reinforcements to rebels
+                  </button>
+                </div>
+                <div class="col-sm-5 hint">
+                  As their forces grow, rebels will conquer cities. If Trump is in a conquered city, the player with the largest engaged forces wins.
+                </div>
+              </div>
+            </div>
           </div>
           <div id="modal-update" class='hidden'>
             <form action=<%= game_path(@game)%> method="post" class='modal-form'>
@@ -218,7 +248,7 @@
               <input name="_method" type="hidden" value="patch" />
 
             </form>
-            <div class="alert alert-info hidden top-margin" id="modal-notification-area">
+            <div class="alert alert-info-inverted hidden top-margin" id="modal-notification-area">
     
             </div>
           </div>

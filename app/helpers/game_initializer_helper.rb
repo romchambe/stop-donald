@@ -57,13 +57,13 @@ module GameInitializerHelper
   
   LAUNCH_SITES_INITIALIZER = {
 	europe: {
-  	  iceland: {operational: true}, guyana: {operational: true}, tahiti: {operational: true}
+  	  iceland: {operational: true}, tahiti: {operational: true}
   	},
 	russia: {
-  	  mourmansk: {operational: true}, kamchatka: {operational: true}, sakhaline: {operational: true},
+  	  mourmansk: {operational: true}, kamchatka: {operational: true}
 	},
 	china: {
-	  north: {operational: true}, center: {operational: true}, east: {operational: true}, 
+	  north: {operational: true}, east: {operational: true}, 
 	  west: {operational: true}, south:{operational: true}
 	}
   } 

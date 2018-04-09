@@ -233,7 +233,7 @@ function updateUnread() {
 }
 
 function generateMap () {
-
+	if ($('#map').length > 0) {
         mapboxgl.accessToken = 
         'pk.eyJ1Ijoicm9tY2hhbWJlIiwiYSI6ImNqZmRyZW1pNDJxMDEycm52NnQ1a2NmMzQifQ.T_tgG6mX6yfcLaGRmT0sgg';
         
@@ -250,7 +250,7 @@ function generateMap () {
         map.addControl(new mapboxgl.FullscreenControl());
 
         let address = window.location.href + '/map';
-        let currentUserId = {user_id: userId}
+        let currentUserId = {user_id: userId};
         $.ajax({
 		  type: "POST",
 		  url: address,
@@ -260,6 +260,7 @@ function generateMap () {
 		  dataType: 'json',
 		  contentType: 'application/json'
 		});
+	}	
 }
 
 function populateMap(arrayOfFeatures,map) {

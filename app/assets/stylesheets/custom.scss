@@ -7,6 +7,7 @@ $grey: #D4D4E2;
 $white: #EFEFEF;
 $red: #dc3545;
 $breakpoint-tablet: 768px;
+$breakpoint-phone: 576px;
 
 #bootstrap-overrides {
 	.navbar {
@@ -60,6 +61,10 @@ $breakpoint-tablet: 768px;
 		align-items:center;
 	}
 
+	.alert.hidden {
+		display: none;
+	}
+
 	.alert-danger {
 		background-color: $red; 
 		color: white;
@@ -77,6 +82,7 @@ $breakpoint-tablet: 768px;
 
 	.close {
 		color: $white; 
+		text-shadow: none;
 		&:hover {
 			color: $green;
 		}
@@ -185,12 +191,20 @@ body {
 .devise-links {
 	a {
 		color: $white;
+		&:hover {
+			color: $green;
+			text-decoration:none;
+		}
 	}
 	margin-top: 0.5rem;
 }
 
 .controls {
 	width: 80%;
+	min-width: 232px; 
+	@media only screen and (max-width: $breakpoint-tablet) {
+		margin-bottom: 0.5rem;
+	}
 }
 
 
@@ -210,12 +224,44 @@ body {
 	margin-right: 1rem;
 }
 
+.button-row {
+	margin-bottom: 1rem;
+	display:flex;
+	align-items: center;
+	.btn {
+		width: 100%;
+	}
+	@media only screen and (min-width: $breakpoint-phone) {
+		min-height: 80px;
+		margin-bottom: 0.5rem;
+	}
+}
+
+.hint {
+	font-size: 0.6rem;
+	@media only screen and (max-width: $breakpoint-phone) {
+		margin-top: 0.5rem;
+		text-align:center;
+	}
+}
+
+.danger-text {
+	color:$red;
+}
+
 // ALERTS --------------------------------------------------------
 
 .alert-notice, .alert-info {
 	background-color: $light-blue; 
 	color: white;
 	border-color: $light-blue;
+}
+
+
+.alert-info-inverted {
+	background-color: $blue; 
+	color: white;
+	border-color: $blue;
 }
 
 .alert-error, .alert-alert {
@@ -301,6 +347,16 @@ body {
 	font-size:0.85rem;
 	padding: 0.5rem 0.8rem;
 	background-color: $light-blue;
+	@media only screen and (max-width: $breakpoint-tablet) {
+		padding: 0.8rem 0.8rem 0 0.8rem;
+		.vertical-center {
+			justify-content:center;
+			margin-bottom: 0.5rem;
+		}
+		.col-md-4 {
+			padding-bottom: 0.8rem;
+		}
+	}
 }
 
 // MESSAGES --------------------------------------------------------
@@ -401,6 +457,10 @@ body {
 
 
 // ACTION MODAL
+
+#modal-action-dialog {
+	
+}
 
 .top-margin {
 	margin-top: 1rem;	
