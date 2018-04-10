@@ -1,24 +1,22 @@
 <div class='container' id='main-container'>	
 
-	<h1 class='content-section center'>Invite your friends</h1>
+	<h3 class='section-title'>Invite your friends</h3>
 
 	<table class="table table-hover" id="invite-friends">
 		<thead>
-			<tr>
-				<th class="center"><strong>Username</strong></th>
-				<th class="center"><strong>Score</strong></th>
-				<th class="center"><strong>Joined at</strong></th>
-				<th class="center"><strong>Options</strong></th>
+			<tr class='row align-items-center'>
+				<th class="center col"><strong>Username</strong></th>
+				<th class="center col"><strong>Player since</strong></th>
+				<th class="center col"><strong>Options</strong></th>
 
 			</tr>
 		</thead>
 		<tbody>
 			<% User.all_except(current_user).each do |invitee| %>
-				<tr>
-					<td class="center"><%= invitee.username %></td>
-					<td class="center">TBD</td>
-					<td class="center"><%= invitee.created_at%></td>
-					<td class="center">
+				<tr class='row align-items-center'>
+					<td class="center col"><%= invitee.username %></td>
+					<td class="center col"><%= invitee.created_at.strftime('%d %B %y') %></td>
+					<td class="center col">
 						<%= link_to uninvite_path(invitee_id: invitee.id), method: :delete, class: "hidden", 
 						id: "uninvite-player-#{invitee.id}", data: {user: invitee.id, uninvite:"true"} do %>
 							<i class="material-icons">close</i>

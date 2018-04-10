@@ -1,4 +1,4 @@
-<div class='container vertically-determined' id='main-container'>	
+<div class='container' id='main-container'>	
 	<section class="content-section">
 	<div class="row">
 		<div class="col-md-2"></div>
@@ -14,7 +14,7 @@
 	</section>
 	<% if !current_user.game_invites.empty? %>
 		<section class="content-section">
-			<h1 class='table-title'>Pending invites</h1>
+			<h3 class='section-title'>Pending invites</h3>
 
 			<table class="table table-hover" id='pending-invites'>
 				<%= render 'games/templates/pending_invites_table' %>
@@ -23,7 +23,7 @@
 	<% end %>
 	<% if !current_user.games.not_finished.empty? %>
 		<section class="content-section">
-			<h1 class='table-title'>Current games</h1>
+			<h3 class='section-title'>Current games</h3>
 
 			<table class="table table-hover" id='current-games'>
 				<%= render 'games/templates/current_games_table' %>

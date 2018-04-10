@@ -1,11 +1,14 @@
 <div class='container-fluid vertically-determined' id='main-container' data-game='<%= @game.id %>'>
 	<div class="container full-vertical-center bold">
-
-		<% if @player.winner == false %>
-		  You lost this game after losing too many cities.
-		  <% else %>
-		  Waiting for the other players
-		<% end %>
-
+		<div class="row">
+			<% if @player.winner == false %>
+			  You lost this game after losing too many cities.
+			  <% else %>
+			  Waiting for the other players
+			<% end %>
+		</div>
+		<div class="row top-margin">
+			<iframe src="https://giphy.com/embed/BKJBHPxi7Utyw" width="480" height="204" frameBorder="0" class="giphy-embed" allowFullScreen></iframe>
+		</div>
 	</div>
 </div>

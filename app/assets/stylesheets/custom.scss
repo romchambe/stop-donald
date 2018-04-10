@@ -21,9 +21,16 @@ $breakpoint-phone: 576px;
 		}
 		.navbar-collapse {
 			justify-content: flex-end;
+			@media only screen and (max-width: $breakpoint-phone) {
+				background-color: $light-blue;
+				margin-top: 0.5rem;
+				padding: 0.5rem 0.8rem;
+				border-radius:4px;
+			}
 		}
 		.dropdown-menu {
-			background-color: $blue;
+			background-color: $light-blue;
+			border-color: $light-blue;
 			.dropdown-item {
 				&:hover {
 					background-color: $blue;
@@ -51,8 +58,10 @@ $breakpoint-phone: 576px;
 	.table {
 		margin: 0;
 		td {
-			vertical-align: middle; 
-			flex-basis: 1; 
+			height: 64px;
+			display: flex;
+    		align-items: center;
+   			justify-content: center;
 			@extend .center;
 		}
 	}
@@ -100,15 +109,25 @@ body {
 
 	background-color: $blue; 
 	color: $grey;
-
+	font-family: 'Ubuntu', sans-serif;
 }
 
 .vertically-determined {
-	height:70%;
+	min-height:70%;
+	display: flex;
+    align-items: center;
 }
 
 .content-section {
 	margin-bottom: 3rem;
+}
+
+.section-title {
+	background-color: $light-blue; 
+	text-align: center;
+	margin-bottom: 1.5rem;
+	border-radius: 4px;
+	padding: 1rem;
 }
 
 .bold {
@@ -138,6 +157,7 @@ body {
 .full-vertical-center {
 	height: 100%;
 	display: flex; 
+	flex-direction:column;
 	justify-content:center;
 	align-items: center;
 }
@@ -166,11 +186,6 @@ body {
 .spaced {
 	display: flex; 
 	justify-content: space-between;
-}
-
-.table-title {
-	text-align: center;
-	margin-bottom: 1rem;
 }
 
 .form-field {
@@ -238,7 +253,7 @@ body {
 }
 
 .hint {
-	font-size: 0.6rem;
+	font-size: 0.65rem;
 	@media only screen and (max-width: $breakpoint-phone) {
 		margin-top: 0.5rem;
 		text-align:center;

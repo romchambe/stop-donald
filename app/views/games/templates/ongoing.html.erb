@@ -5,8 +5,8 @@
     <div class="row align-items-center" data-game='<%= @game.id %>' id='game-header'>
       <div class="col-md-4">
         <div class="row ">
-          <div class="col header bold">
-            Week <%= @game.turn_number %> -- Time left: <span id='timer'><%= @player.timer %></span> seconds
+          <div class="col header">
+            <strong>Week <%= @game.turn_number %> </strong>-- Time left: <span id='timer' class='danger-text bold'><%= @player.timer %></span> seconds
           </div>
           
         </div>
