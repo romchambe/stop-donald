@@ -57,6 +57,12 @@ $breakpoint-phone: 576px;
 
 	.table {
 		margin: 0;
+		th {
+			height: 80px;
+			display: flex;
+    		align-items: center;
+   			justify-content: center;
+		}
 		td {
 			height: 64px;
 			display: flex;
@@ -256,6 +262,13 @@ body {
 		margin-top: 0.5rem;
 		text-align:center;
 	}
+}
+
+.button-hint {
+	font-size: 0.8rem;
+	text-align: center;
+	margin-top: 0.5rem;
+	opacity: 0.7;
 }
 
 .danger-text {
