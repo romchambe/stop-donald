@@ -14,22 +14,13 @@
 			<td class='col'><%= game.status.capitalize %></td>
 			<td class='col'><%= game.created_at.strftime('%d %B %y') %></td>
 			<td class='col'>	
-				<ul class='button-list'>
-					<li>
-						<% if game.status == 'ongoing' %>
+				<% if game.status == 'ongoing' %>
 					<%= link_to "Play!", game_path(game), class: "btn btn-primary", 
 					data: {game: game.id, status: game.status} %>
 				<% else %>
 					<%= link_to "Go to game", game_path(game), class: "btn btn-primary", 
 					data: {game: game.id, status: game.status} %>
 				<% end %>
-					</li>
-					<% if game.status != "ongoing" %>
-						<li>
-							<%= link_to "Delete game", game_path(game), method: :delete, class: "btn btn-danger" %>
-						</li>
-					<% end %> 
-				</ul>
 			</td>
 		</tr>
 	<% end %>
@@ -47,6 +38,7 @@
 					data: {game: game.id, status: game.status} %>
 				<% end %>
 			</td>
+			
 		</tr>
 	<% end %>
 </tbody>
