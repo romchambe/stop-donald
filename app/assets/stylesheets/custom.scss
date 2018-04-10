@@ -101,21 +101,18 @@ $breakpoint-phone: 576px;
 
 // GENERAL ----------------------------------------------------------------
 
-html, body {
+html {
 	height:100%; 
 }
 
 body {
-
+	height:100%; 
 	background-color: $blue; 
 	color: $grey;
 	font-family: 'Ubuntu', sans-serif;
-}
-
-.vertically-determined {
-	min-height:70%;
-	display: flex;
-    align-items: center;
+	display: flex; 
+	flex-direction: column;
+	justify-content: space-between;
 }
 
 .content-section {
@@ -155,7 +152,6 @@ body {
 }
 
 .full-vertical-center {
-	height: 100%;
 	display: flex; 
 	flex-direction:column;
 	justify-content:center;
@@ -226,8 +222,10 @@ body {
 .hidden {
 	display: none;
 }
-
 .footer {
+	align-self: flex-end
+}
+.bottom-line {
 	margin-top: 2rem;
 	height: 2rem; 
 	border-top: 1px solid $white;

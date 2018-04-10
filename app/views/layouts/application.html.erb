@@ -29,19 +29,20 @@
   </head>
 
   <body id='bootstrap-overrides'>
-    <%= render 'layouts/header' %>
-    <div class="container">
-      <% flash.each do |key, value| %>
-        <div class="alert alert-<%= key %>" id='flash-area'><%= value %></div>
-      <% end %>
+    <div>
+      <%= render 'layouts/header' %>
+      <div class="container" id='flash-area'>
+        <% flash.each do |key, value| %>
+          <div class="alert alert-<%= key %>"><%= value %></div>
+        <% end %>
+      </div>
+      <div class="container" id='notification-area'>
+      </div>
+      
+      <%= yield %>
     </div>
-    <div class="container" id='notification-area'>
-    </div>
-    
-    <%= yield %>
-
-    <div class="container-fluid">
-      <div class="footer"></div>
+    <div class="container-fluid footer">
+      <div class="bottom-line"></div>
     </div>
     
   </body>
