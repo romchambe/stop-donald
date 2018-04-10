@@ -1,4 +1,4 @@
-<div class='container-fluid vertically-determined' id='main-container'>
+<div class='container-fluid' id='main-container'>
 	<div class="container full-vertical-center bold">
 		<% if @game.players.where(winner: true).empty? %>
 			None of the player found and stopped Trump. Earth is doomed to read (and - sometimes - laugh with) Donald Trump's tweet until his death
@@ -6,8 +6,11 @@
 			Thanks to <%= @game.players.where(winner: true)[0].country.capitalize %>'s clever strategy, the world avoided nuclear apocalypse and years of Trump's tweets! 
 		<% end %>
 	</div>
-	<div class="center">
+	<div class="center top-margin">
 		<%= link_to 'Back to your games', games_path, class: 'btn btn-primary form-submit' %>
+	</div>
+	<div class="row top-margin">
+		<iframe src="https://giphy.com/embed/xTiTnHXbRoaZ1B1Mo8" width="480" height="271" frameBorder="0" class="giphy-embed" allowFullScreen></iframe>
 	</div>
 </div>
 
