@@ -72,7 +72,7 @@
             </div>
 
           <% else %>
-            <% @player.messages.each do |message| %>
+            <% @player.messages.order('created_at DESC').each do |message| %>
               <div class="message">
                 <div class="message-info spaced">
                   

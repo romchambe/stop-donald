@@ -8,35 +8,15 @@
 	</tr>
 </thead>
 <tbody>
-	<% Game.created_by(current_user).not_finished.each do |game| %>
-		<tr class='row align-items-center'>
-			<td class='col'><%= game.turn_number.nil? ? 'Not started' : game.turn_number %></td>
-			<td class='col'><%= game.status.capitalize %></td>
-			<td class='col'><%= game.created_at.strftime('%d %B %y') %></td>
-			<td class='col'>	
-				<% if game.status == 'ongoing' %>
-					<%= link_to "Play!", game_path(game), class: "btn btn-primary", 
-					data: {game: game.id, status: game.status} %>
-				<% else %>
-					<%= link_to "Go to game", game_path(game), class: "btn btn-primary", 
-					data: {game: game.id, status: game.status} %>
-				<% end %>
-			</td>
-		</tr>
-	<% end %>
-	<% current_user.games.not_created_by(current_user).not_finished.each do |game| %>
+	<% current_user.games.not_finished.order('created_at DESC').each do |game| %>
 		<tr class='row align-items-center'>
 			<td class='col'><%= game.turn_number.nil? ? 'Not started' : game.turn_number %></td>
 			<td class='col'><%= game.status.humanize %></td>
 			<td class='col'><%= game.created_at.strftime('%d %B %y') %></td>
 			<td class='col'>
-				<% if game.status == 'ongoing' %>
-					<%= link_to "Play!", game_path(game), class: "btn btn-primary", 
-					data: {game: game.id, status: game.status} %>
-				<% else %>
-					<%= link_to "Go to game", game_path(game), class: "btn btn-primary", 
-					data: {game: game.id, status: game.status} %>
-				<% end %>
+				<%= link_to "Play!", game_path(game), class: "btn btn-primary", 
+				data: {game: game.id, status: game.status} %>
+				
 			</td>
 			
 		</tr>

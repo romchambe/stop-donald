@@ -247,7 +247,8 @@ function generateMap () {
   			attributionControl: false
         });
         map.dragRotate.disable();
-        map.addControl(new mapboxgl.FullscreenControl());
+        map.legendControl.addLegend('<i class="material-icons location-input destroyed">location_city</i> - Destroyed city <br>'
+        							+ '<i class="material-icons location-input destroyed">flag</i> - Conquered city <br>');
 
         let address = window.location.href + '/map';
         let currentUserId = {user_id: userId};
