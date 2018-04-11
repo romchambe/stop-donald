@@ -98,8 +98,6 @@ function actionResponse (data) {
     		bindActiveClickListeners(this, max);
 		});
 	}
-
-	
 	
 	if (data.selector === '#cities') {
 		$("#modal-action-selection").modal('toggle');
@@ -120,35 +118,6 @@ function actionResponse (data) {
 		$('.active').each( function(index, element) {
 			bindActiveClickListeners(element, data.max);
 		});
-		// $('.location-input.active').on('click', function() {
-			
-		// 	if (checkNumberOfSelectedCities(data.max)){ 
-
-		// 		let targetId = $(this).attr('id');
-		// 		let targetName = this.dataset.name;
-
-		// 		$(this).removeClass('active');
-		// 		$(this).addClass('selected');
-				
-		// 		$('#cities-form').append('<input type="hidden" name="targets[' + targetId + ']"' + 
-		// 								 'id="target-' + targetId + '" value="' + targetName + '">');
-				
-		// 		$(this).on('click', function() {
-		// 			let targetSelector = '#target-' + $(this).attr('id');
-
-		// 			$(this).removeClass('selected');
-		//     		$(this).addClass('active');
-		//     		$("#notification-area").empty();
-		//     		$(targetSelector).remove();
-		// 		});
-
-		// 	} else {
-		// 		$("#notification-area").removeClass('hidden');
-		// 		$('#notification-area').append('<div class="alert alert-notice">You cannot select more than ' 
-		// 										+ data.max + ' cities/launch sites </div>');
-		// 	};
-			
-		// });
 
 	} else if (data.selector === '#modal-form') {
 		$('#modal-actions').addClass('hidden');
@@ -257,6 +226,7 @@ function generateMap () {
 		  url: address,
 		  success: function (data) {
 		  	populateMap(data, map);
+		  	console.log(data);
 		  },
 		  dataType: 'json',
 		  contentType: 'application/json'
@@ -285,7 +255,7 @@ function populateMap(arrayOfFeatures,map) {
 	  	$(el).append('<i class="material-icons location-input disabled">remove_red_eye</i>');
 	  } else if (marker.properties.type === 'City') {
 	  	$(el).append('<i class="material-icons location-input disabled">location_city</i>');
-	  } else if (marker.properties.type === 'Launch Site' & marker.properties.operational) {
+	  } else if (marker.properties.type === 'Launch Site' && marker.properties.destroyed) {
 	  	$(el).append('<i class="material-icons location-input destroyed">gps_off</i>');
 	  } else if (marker.properties.type === 'Launch Site') {
 	  	$(el).append('<i class="material-icons location-input disabled">gps_fixed</i>');
@@ -333,7 +303,7 @@ $(document).on('turbolinks:load', function () {
 	bindFormClickListeners();
 	updateUnread();
 	generateMap();
-	startTimer();
+	// startTimer();
 });
 
 

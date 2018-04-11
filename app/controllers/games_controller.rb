@@ -133,41 +133,50 @@ class GamesController < ApplicationController
     
     elsif params[:user_action] == 'mission'
       # "targets"=>{"0"=>"New_York", "1"=>"Los_Angeles"}
-      @game.cities.each {
-        |city, attributes| attributes[:spies].delete_if { |country, name| country == @player.country.to_sym }
-      }
-  
-      available_spies = @player.spies.select {|key, value| value[:operational]}
-      keys = available_spies.keys
+      if !params[:targets].nil?
+        @game.cities.each {
+          |city, attributes| attributes[:spies].delete_if { |country, name| country == @player.country.to_sym }
+        }
+    
+        available_spies = @player.spies.select {|key, value| value[:operational]}
+        keys = available_spies.keys
 
-      counter = 0
-      params[:targets].each do |city_id, name|
-        @game.cities[name.to_sym][:spies][@player.country.to_sym] = available_spies[keys[counter]][:name]
-        counter += 1
-      end
+        counter = 0
+        params[:targets].each do |city_id, name|
+          @game.cities[name.to_sym][:spies][@player.country.to_sym] = available_spies[keys[counter]][:name]
+          counter += 1
+        end
+      else
+        flash[:danger] = 'You need to select some cities on the map!'
+        return redirect_to game_path(@game)
+      end 
       @game.save
     
     elsif params[:user_action] == 'attack'
-
-      params[:targets].each do |city_id, name|
-        if city_id.to_i > 24
-          @game.launch_sites[name.to_sym][:operational] = false
-        else
-          spies_countries = @game.cities[name.to_sym][:spies].keys
-          spies_countries.each do |country|
-            @game.players.where(country: country).each do |player|
-              player.spies.each do |spy_id, attributes|
-                if attributes[:name] == @game.cities[name.to_sym][:spies][country.to_sym]
-                  attributes[:operational] = false
-                  player.save
+      if !params[:targets].nil?
+        params[:targets].each do |city_id, name|
+          if city_id.to_i > 24
+            @game.launch_sites[name.to_sym][:operational] = false
+          else
+            spies_countries = @game.cities[name.to_sym][:spies].keys
+            spies_countries.each do |country|
+              @game.players.where(country: country).each do |player|
+                player.spies.each do |spy_id, attributes|
+                  if attributes[:name] == @game.cities[name.to_sym][:spies][country.to_sym]
+                    attributes[:operational] = false
+                    player.save
+                  end
                 end
               end
             end
+            @game.cities[name.to_sym][:spies] = {}
+            @game.cities[name.to_sym][:destroyed] = true
+            @game.cities[name.to_sym][:destroyed_by] << @player.id
           end
-          @game.cities[name.to_sym][:spies] = {}
-          @game.cities[name.to_sym][:destroyed] = true
-          @game.cities[name.to_sym][:destroyed_by] << @player.id
-        end
+        end 
+      else
+        flash[:danger] = 'You need to select some cities on the map!'
+        return redirect_to game_path(@game)
       end
 
       #retaliation

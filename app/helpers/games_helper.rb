@@ -185,7 +185,7 @@ module GamesHelper
     game.players.each do |player|
       if player.country.to_sym == :china && player.lost_cities > 9
         player.update(winner: false)
-      elsif player.lost_cities > 5
+      elsif player.country.to_sym != :china && player.lost_cities > 5
         player.update(winner: false)
       end
     end 
@@ -347,21 +347,21 @@ module GamesHelper
   def build_geojson(game,player)
     geojson = []
     
-    CITIES_INITIALIZER.each do |name, properties|
+    CITIES_INITIALIZER.each do |name, attributes|
 
       spy_name = game.cities[name][:spies][player.country.to_sym]
       geojson << {
         type: 'Feature',
         geometry: {
           type: 'Point',
-          coordinates: [properties[:long], properties[:lat]]
+          coordinates: [attributes[:long], attributes[:lat]]
         },
         properties: {
           type: 'City',
           id: game.cities[name][:id],
           name: name,
           name_human: name.to_s.humanize.titleize,
-          population: properties[:pop], 
+          population: attributes[:pop], 
           destroyed: game.cities[name][:destroyed], 
           conquered: game.cities[name][:conquered],
           spies: spy_name
@@ -369,19 +369,19 @@ module GamesHelper
       }
     end
 
-    US_LAUNCH_SITES[:usa].each do |name, properties|
+    US_LAUNCH_SITES[:usa].each do |name, attributes|
       geojson << {
         type: 'Feature',
         geometry: {
           type: 'Point',
-          coordinates: [properties[:long], properties[:lat]]
+          coordinates: [attributes[:long], attributes[:lat]]
         },
         properties: {
           type: 'Launch Site',
-          id: properties[:id],
+          id: attributes[:id],
           name: name,
           name_human: name.to_s.humanize.titleize,
-          destroyed: properties[:operational]
+          destroyed: !game.launch_sites[name][:operational]
         }
       }
     end 
