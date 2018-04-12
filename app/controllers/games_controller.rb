@@ -126,10 +126,11 @@ class GamesController < ApplicationController
     #method used by players to go to the next turn and update the state of the game with their actions
     find_player(@game)
 
+
+    #Manage Actions
     if params[:user_action] == 'recruit'
       id = @player.spies.length
       @player.spies[id] = {name: params[:spy][:name], operational: true}
-      @player.save
     
     elsif params[:user_action] == 'mission'
       # "targets"=>{"0"=>"New_York", "1"=>"Los_Angeles"}
@@ -150,26 +151,14 @@ class GamesController < ApplicationController
         flash[:danger] = 'You need to select some cities on the map!'
         return redirect_to game_path(@game)
       end 
-      @game.save
     
     elsif params[:user_action] == 'attack'
+
       if !params[:targets].nil?
         params[:targets].each do |city_id, name|
           if city_id.to_i > 24
             @game.launch_sites[name.to_sym][:operational] = false
           else
-            spies_countries = @game.cities[name.to_sym][:spies].keys
-            spies_countries.each do |country|
-              @game.players.where(country: country).each do |player|
-                player.spies.each do |spy_id, attributes|
-                  if attributes[:name] == @game.cities[name.to_sym][:spies][country.to_sym]
-                    attributes[:operational] = false
-                    player.save
-                  end
-                end
-              end
-            end
-            @game.cities[name.to_sym][:spies] = {}
             @game.cities[name.to_sym][:destroyed] = true
             @game.cities[name.to_sym][:destroyed_by] << @player.id
           end
@@ -187,10 +176,8 @@ class GamesController < ApplicationController
         @player.lost_launch_sites += 1
       end 
 
-      @player.save
-      @game.save
-      
     elsif params[:user_action] == 'reinforce'
+
       if can_reinforce?(@player.available_forces)
         reinforcements = reinforcements_for(@player)
         reinforcements.each do |key, strength|
@@ -198,37 +185,34 @@ class GamesController < ApplicationController
           @player.engaged_forces[key] += strength
           @player.available_forces[key] -= strength
         end
-        @game.save
-        @player.save
+      
       else 
         flash[:danger] = "You don't have any more troops to send"
-        redirect_to game_path(@game)
+        return redirect_to game_path(@game)
       end
+
     elsif params[:user_action] == 'pass'
       flash[:danger] = 'You did not take any action in time'
 
     else
       flash[:danger] = 'This is not an allowed action'
     end
-
-    @player.update(status: 'updated')
-    NewPlayerBroadcastJob.perform_now @player.game_id, 'player_updated', @player.id
-
-    if @game.players.where(status: 'updated').size == 3
+    
+    #Manage whether going to next turn or waiting
+    if @game.players.where(status: 'updated').size < 2
       
-      @game.turn_number += 1
+      @player.status = 'updated'
+      @player.save
       @game.save
-      next_turn(@game)
-      
-      @game.players.each do |player|
-        player.update(status: 'pending_action') unless player.winner == false
-      end
+      NewPlayerBroadcastJob.perform_now @player.game_id, 'player_updated', @player.id
 
+    elsif @game.players.where(status: 'updated').size == 2
+      
+      @player.save
+      next_turn(@game)
       NewPlayerBroadcastJob.perform_now @player.game_id,'next_turn'
 
     end 
-
-    @player.update(timer: TIMER_START)
 
     redirect_to game_path(@game)
   end 
