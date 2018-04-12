@@ -2,7 +2,7 @@ class GamesController < ApplicationController
 
   before_action :authenticate_user!
   before_action :find_invitee, only: [:invite, :uninvite]
-  before_action :find_game, only: [:show, :actions, :update, :invite, :cancel_action,
+  before_action :find_game, only: [:show, :actions, :update, :invite, :cancel_action, :get_invite_token,
                                    :uninvite, :send_invites, :join, :destroy, :map, :timer_update]
 
   def index
@@ -22,10 +22,22 @@ class GamesController < ApplicationController
 
   def show
   	#show the game once it is launched. Should redirect to pending_game until the 3 players have joined
+
+    if params[:invite_token] == @game.invite_token && @game.players.size < 3 && @game.players.where(user_id: current_user.id).empty?
+      Player.create(game_id: @game.id, user_id: current_user.id, 
+                    username: User.find(current_user.id).username, status:'pending_action')
+      creator = @game.creator.username
+      flash[:info] = "You have joined the game on an invite by #{creator}"
+      ready_to_start?(@game)
+      return redirect_to game_path(@game)
+    end 
+
     if !find_player(@game)
       flash[:danger] = 'You are not one of the players of this game'
       redirect_to games_path
-    elsif (@game.status == 'ongoing' && @player.status == 'updated')
+    elsif @game.status == 'invite_friends' && current_user != @game.creator
+      render_partial_for("pending")
+    elsif @game.status == 'ongoing' && @player.status == 'updated'
       render_partial_for(@player.status)
     else
       render_partial_for(@game.status)
@@ -65,7 +77,7 @@ class GamesController < ApplicationController
   end
 
   def send_invites
-    if @game.invitees.size == 2
+    if @game.invitees.size == 2 || params[:type] == 'invite_link'
       @game.update(status: "pending")
       redirect_to game_path(@game)
     else
@@ -225,6 +237,15 @@ class GamesController < ApplicationController
   def get_current_user
     @user = current_user
     render json: {id: @user.id}
+  end
+
+  def get_invite_token
+    if @game.invite_token.nil?
+      token = create_random_token
+      @game.update(invite_token: token)
+    end 
+
+    render json: {token: @game.invite_token}
   end
 
   def map

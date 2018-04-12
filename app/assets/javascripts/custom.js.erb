@@ -53,6 +53,21 @@ function bindFormClickListeners () {
 		updateUnread();
  	});
 
+ 	$('#generate-invite-token').on('click', function () {
+ 		$.ajax({
+		  type: "POST",
+		  url: window.location.href + '/get_invite_token',
+		  success: function (data) {
+		  	let inviteAddress = window.location.href + '?invite_token=' + data.token;
+		  	$('#invite-friends-section').addClass('hidden');
+		  	$('#invite-link-section').removeClass('hidden');
+		  	$('#invite-link-field').text(inviteAddress);
+		  },
+		  dataType: 'json',
+		  contentType: 'application/json'
+		});
+ 	});
+
 }
 
 function actionResponse (data) {

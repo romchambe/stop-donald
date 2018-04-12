@@ -1,42 +1,60 @@
-<div class='container' id='main-container'>	
+<div class='container' id='main-container'>
+	<div id="invite-link-section" class="center hidden">
+		<strong>Copy this link and share it with your friends: </strong>
+		<div class="top-margin form-field" id='invite-link-field'>
 
-	<h3 class='section-title'>Invite your friends</h3>
+		</div> 
+		<div class="bold"> And then... </div>
+		<%= link_to 'Get started!', send_invites_path(@game, type: 'invite_link'), method: :post, 
+		class: "btn btn-primary top-margin form-submit" %>
+	</div>
+	<div id="invite-friends-section">
+		<div class="center">
+			<div class="btn btn-primary top-margin form-submit", id='generate-invite-token'>
+				Generate invite link
+			</div>	
+		</div>
+		<div class="top-margin center">
+			Or
+		</div>
+		<h3 class='section-title top-margin'>Invite your friends</h3>
 
-	<table class="table table-hover" id="invite-friends">
-		<thead>
-			<tr class='row align-items-center'>
-				<th class="center col"><strong>Username</strong></th>
-				<th class="center col"><strong>President hunter since</strong></th>
-				<th class="center col"><strong>Options</strong></th>
-
-			</tr>
-		</thead>
-		<tbody>
-			<% User.all_except(current_user).each do |invitee| %>
+		<table class="table table-hover" id="invite-friends">
+			<thead>
 				<tr class='row align-items-center'>
-					<td class="center col"><%= invitee.username %></td>
-					<td class="center col"><%= invitee.created_at.strftime('%d %B %y') %></td>
-					<td class="center col">
-						<%= link_to uninvite_path(invitee_id: invitee.id), method: :delete, class: "hidden", 
-						id: "uninvite-player-#{invitee.id}", data: {user: invitee.id, uninvite:"true"} do %>
-							<i class="material-icons">close</i>
-						<% end %>
-						<%= link_to "Invite", invite_path(invitee_id: invitee.id), method: :post, 
-						remote: true, class: "btn btn-primary", id: "invite-player-#{invitee.id}", 
-						data: {user: invitee.id, invite:"false"} %>
-						<script type="text/javascript">
-							<% if @game.invitees.include?(invitee) %>
-								$('#invite-player-<%= invitee.id %>').css('display', 'none'); 
-								$('#uninvite-player-<%= invitee.id %>').css('display', 'inline-block');
-							<% end %>
-						</script>
-					</td>
+					<th class="center col"><strong>Username</strong></th>
+					<th class="center col"><strong>President hunter since</strong></th>
+					<th class="center col"><strong>Options</strong></th>
+
 				</tr>
-			<% end %>
-		</tbody>
-	</table>
-	<div class="center">
-		<%= link_to 'Send invites', send_invites_path(@game), method: :post, 
-		class: "btn btn-primary top-margin form-submit", id: 'send-invites', data: {game: @game.id} %>
+			</thead>
+			<tbody>
+				<% User.all_except(current_user).each do |invitee| %>
+					<tr class='row align-items-center'>
+						<td class="center col"><%= invitee.username %></td>
+						<td class="center col"><%= invitee.created_at.strftime('%d %B %y') %></td>
+						<td class="center col">
+							<%= link_to uninvite_path(invitee_id: invitee.id), method: :delete, class: "hidden", 
+							id: "uninvite-player-#{invitee.id}", data: {user: invitee.id, uninvite:"true"} do %>
+								<i class="material-icons">close</i>
+							<% end %>
+							<%= link_to "Invite", invite_path(invitee_id: invitee.id), method: :post, 
+							remote: true, class: "btn btn-primary", id: "invite-player-#{invitee.id}", 
+							data: {user: invitee.id, invite:"false"} %>
+							<script type="text/javascript">
+								<% if @game.invitees.include?(invitee) %>
+									$('#invite-player-<%= invitee.id %>').css('display', 'none'); 
+									$('#uninvite-player-<%= invitee.id %>').css('display', 'inline-block');
+								<% end %>
+							</script>
+						</td>
+					</tr>
+				<% end %>
+			</tbody>
+		</table>
+		<div class="center">
+			<%= link_to 'Send invites', send_invites_path(@game), method: :post, 
+			class: "btn btn-primary top-margin form-submit", id: 'send-invites', data: {game: @game.id} %>
+		</div>
 	</div>
 </div>

@@ -131,6 +131,7 @@ body {
 	margin-bottom: 1.5rem;
 	border-radius: 4px;
 	padding: 1rem;
+	width: 100%;
 }
 
 .bold {
@@ -198,6 +199,13 @@ body {
 	padding: 0.4rem 0.6rem;
 	min-width: 220px;
     width: 30%;
+}
+
+#invite-link-field {
+	min-width: 360px;
+	width: 90%;
+	margin-right: auto;
+    margin-left: auto;
 }
 
 .form-submit {

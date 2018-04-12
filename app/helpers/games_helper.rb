@@ -3,6 +3,10 @@ module GamesHelper
   
   TIMER_START = 60
 
+  def create_random_token
+    SecureRandom.urlsafe_base64
+  end 
+  
   def random_game_available?
   	Game.created_by(User.find(1)).pending.empty?
   end
@@ -367,6 +371,14 @@ module GamesHelper
     trump_location = rand(possible_locations.length)
     game.cities[possible_locations[trump_location]][:trump] = true 
     game.save  
+  end
+
+  def get_trump_city(game)
+    game.cities.select{ |k,v| 
+      if v[:trump]
+        return k
+      end
+    }
   end
 
   def build_geojson(game,player)

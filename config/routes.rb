@@ -19,6 +19,7 @@ Rails.application.routes.draw do
   delete '/games/:id/cancel_action', to: 'games#cancel_action', as: 'cancel_action'
   post '/games/:id/timer_update', to: 'games#timer_update', as: 'timer_update'
   post '/games/:id/map', to: 'games#map', as: 'map'
+  post '/games/:id/get_invite_token', to: 'games#get_invite_token', as: 'get_invite_token'
 
   post '/read', to: 'messages#read', as: 'read'
 
