@@ -10,6 +10,7 @@ let userId;
 function inviteSubscriptionCreator(id) {
 	return App.cable.subscriptions.create({channel: 'GameInvitesChannel', user_id: id}, {  
 		received: function(data) {
+			console.log('received');
 			if (userId === id) {
 				$("#notification-area").append('<div class="alert alert-info">' + 
 					data.message + "<a href='/games/" + data.game_invite_id + 

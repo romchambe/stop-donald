@@ -8,6 +8,7 @@ let arrayOfGames = [];
 function subscriptionCreator (gameId) {
 	return App.cable.subscriptions.create({channel: 'WaitingRoomChannel', waiting_room: gameId}, {  
 		received: function(data) {
+			console.log('received');
 			if (data.event === 'player_joined') {
 				let game_id = data.game_id;
 				let playersCount = parseInt(data.players_count);  
@@ -41,6 +42,7 @@ $(document).on('turbolinks:load', function() {
 	});
 	arrayOfGames.forEach( function(game) {
 		App["waiting_room_" + game] = subscriptionCreator(game);
+		console.log('subscribed to game ' + game);
 	});	
 });
 

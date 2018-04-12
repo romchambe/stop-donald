@@ -118,24 +118,21 @@ module GamesHelper
 
   def next_turn(game)
 
+    game.turn_number += 1
     trump_city = ''
+    killed_spies = {china: [], europe: [], russia: []}
+    
     game.cities.select{ |k,v| 
       if v[:trump]
         trump_city = k
       end
     }
+
     casualties_caused = {rebels: 0.09, us_army: 0.03}
 
     #REBELLION MANAGEMENT -------------------------------------------------------------------------
     rebels_power = power_computer game.rebels_forces
     us_army_power = power_computer game.us_army_forces
-
-    game.players.each do |player|
-      player.engaged_forces.each do |type, firepower|
-        player.engaged_forces[type] = ((1.0 - casualties_caused[:us_army]) * firepower).round
-      end 
-      player.save
-    end
 
     game.rebels_forces.each do |type, firepower|
       game.rebels_forces[type] = ((1.0 - casualties_caused[:us_army]) * firepower).round
@@ -177,37 +174,6 @@ module GamesHelper
                        turn_number: game.turn_number)
       end 
     end
-
-    game.save
-
-    #VICTORY MANAGEMENT ---------------------------------------------------------------------------
-
-    game.players.each do |player|
-      if player.country.to_sym == :china && player.lost_cities > 9
-        player.update(winner: false)
-      elsif player.country.to_sym != :china && player.lost_cities > 5
-        player.update(winner: false)
-      end
-    end 
-
-    if game.cities[trump_city][:destroyed]
-      Player.find(game.cities[trump_city][:destroyed_by][0]).update(winner: true)
-      game.update(status: 'finished')
-    
-    elsif game.cities[trump_city][:conquered]
-      
-      players_engaged_firepower = {}
-      game.players.each do |player|
-        player_power = power_computer player.engaged_forces
-        players_engaged_firepower[player.country.to_sym] = player_power
-      end
-
-      game.players.where(country: players_engaged_firepower.key(players_engaged_firepower.values.max))[0].update(winner: true)
-      game.update(status: 'finished')
-    
-    elsif game.turn_number == 13 
-      game.update(status: 'finished')
-    end
     
     #SPIES MANAGEMENT -----------------------------------------------------------------------------
     if !game.cities[trump_city][:spies].empty? && rand_comparator?(0.7)
@@ -215,7 +181,10 @@ module GamesHelper
       game.cities[trump_city][:spies].each do |country, spy_name|
         player = game.players.find_by(country: country)
         if rand_comparator?(0.3)
-          kill_spy(player, spy_name, trump_city, game)
+          
+          killed_spies[country] << spy_name
+          game.cities[trump_city][:spies].delete(country)
+
           Message.create(player_id: player.id, read: false, 
                          content:"#{spy_name} was killed after having found Trump in #{trump_city}, and Trump moved to another city",
                          turn_number: game.turn_number)
@@ -252,14 +221,81 @@ module GamesHelper
     spies_on_mission.each do |country, array_of_spies|
       player = game.players.find_by(country: country)
       array_of_spies.each do |spy_hash|
-        if rand_comparator?(0.1)
-          kill_spy(player, spy_hash[:name], spy_hash[:city], game)
+        
+        if game.cities[spy_hash[:city]][:destroyed]
+
+          game.cities[spy_hash[:city]][:spies].delete(country)
+          killed_spies[country] << spy_hash[:name]
+          
+
+          Message.create(player_id: player.id, read: false, 
+                       content:"#{spy_hash[:name]} was killed in #{spy_hash[:city]} as the city was destroyed by a nuclear attack",
+                       turn_number: game.turn_number)
+        
+        elsif rand_comparator?(0.1)
+          
+          game.cities[spy_hash[:city]][:spies].delete(country)
+          killed_spies[country] << spy_hash[:name]
+
           Message.create(player_id: player.id, read: false, 
                        content:"#{spy_hash[:name]} was killed in action by the CIA in #{spy_hash[:city]} without finding Trump",
                        turn_number: game.turn_number)
         end
       end 
     end
+
+    #VICTORY MANAGEMENT ---------------------------------------------------------------------------
+
+    if game.cities[trump_city][:destroyed]
+      Player.find(game.cities[trump_city][:destroyed_by][0]).update(winner: true)
+      game.status = 'finished'
+    
+    elsif game.cities[trump_city][:conquered]
+      
+      players_engaged_firepower = {}
+      
+      game.players.each do |player|
+        player_power = power_computer player.engaged_forces
+        players_engaged_firepower[player.country.to_sym] = player_power
+      end
+
+      game.players.where(country: players_engaged_firepower.key(players_engaged_firepower.values.max))[0].update(winner: true)
+      game.status = 'finished'
+    
+    elsif game.turn_number == 13 
+      game.status = 'finished'
+    end
+
+    #GAME AND PLAYERS UPDATES ---------------------------------------------------------------------------
+
+    game.save
+
+    game.players.each do |player| 
+      killed_spies[player.country.to_sym].each do |spy_name|
+  
+        player.spies.select {|k,v| 
+          if v[:name] == spy_name
+            player.spies[k][:operational] = false
+          end 
+        }
+      end
+      
+      player.engaged_forces.each do |type, firepower|
+        player.engaged_forces[type] = ((1.0 - casualties_caused[:us_army]) * firepower).round
+      end 
+
+      if player.country.to_sym == :china && player.lost_cities > 9
+        player.winner = false
+      elsif player.country.to_sym != :china && player.lost_cities > 5
+        player.winner = false
+      end
+
+      player.timer = TIMER_START
+      player.status = 'pending_action' unless player.winner == false
+      player.save
+    end
+
+
   end
 
   def rand_comparator?(probability)
@@ -288,17 +324,6 @@ module GamesHelper
       end
     }
     return spies_on_mission
-  end
-
-  def kill_spy(player, spy_name, city, game)
-    player.spies.select {|k,v| 
-      if v[:name] == spy_name
-        player.spies[k][:operational] = false
-        game.cities[city][:spies].delete(player.country.to_sym)
-      end 
-    }
-    game.save
-    player.save
   end
 
   def can_attack?(launch_sites)
