@@ -369,6 +369,14 @@ module GamesHelper
     game.save  
   end
 
+  def get_trump_city(game)
+    game.cities.select{ |k,v| 
+      if v[:trump]
+        return k
+      end
+    }
+  end
+
   def build_geojson(game,player)
     geojson = []
     
