@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180328144408) do
+ActiveRecord::Schema.define(version: 20180412093415) do
 
   create_table "delayed_jobs", force: :cascade do |t|
     t.integer "priority", default: 0, null: false
@@ -44,6 +44,7 @@ ActiveRecord::Schema.define(version: 20180328144408) do
     t.string "status"
     t.text "cities"
     t.text "launch_sites"
+    t.string "invite_token"
     t.index ["creator_id"], name: "index_games_on_creator_id"
   end
 

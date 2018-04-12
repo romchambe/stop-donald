@@ -3,6 +3,10 @@ module GamesHelper
   
   TIMER_START = 60
 
+  def create_random_token
+    SecureRandom.urlsafe_base64
+  end 
+  
   def random_game_available?
   	Game.created_by(User.find(1)).pending.empty?
   end
