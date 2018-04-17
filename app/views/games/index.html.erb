@@ -1,34 +1,56 @@
 <div class='container' id='main-container'>	
-	<section class="content-section">
-	<div class="row">
-		<div class="col-md-2"></div>
-		<div class="col-md-4 center">
-			<%= link_to 'Join a random game', random_path, method: :post, class: 'btn btn-primary controls' %>
-		</div>
-		<div class="col-md-4 center">
-			<%= link_to 'Create a private game', games_path(game: {creator_id: current_user.id, status: "invite_friends"}), 
-				method: :post, class: 'btn btn-primary controls' %>
-		</div>
-		<div class="col-md-2"></div>
-	</div>
-	</section>
-	<% if !current_user.game_invites.empty? %>
-		<section class="content-section">
-			<h3 class='section-title'>Pending invites</h3>
-
-			<table class="table table-hover" id='pending-invites'>
-				<%= render 'games/templates/pending_invites_table' %>
-			</table>
-		</section>
-	<% end %>
-	<% if !current_user.games.not_finished.empty? %>
-		<section class="content-section">
-			<h3 class='section-title'>Current games</h3>
-
-			<table class="table table-hover" id='current-games'>
-				<%= render 'games/templates/current_games_table' %>
-			</table>
-		</section>
-	<% end %>
 	
+	
+ 	<% if current_user.game_invites.empty? && current_user.games.not_finished.empty? %>
+
+		<div class="row justify-content-center content-section">
+			<div class="col-md-4 center">
+				<%= link_to 'Create a private game', games_path(game: {creator_id: current_user.id, status: "invite_friends"}), 
+			method: :post, class: 'btn btn-primary controls' %>
+			</div>
+			<div class="w-100">
+				
+			</div>
+			<div class="col-md-4 button-hint center">
+				3 players are needed to start a game
+			</div>
+		</div>
+		<div class="row justify-content-center content-section">
+			<div class="col-md-7">
+				<h3 class="section-title">November 2020</h3>
+				<p class='center'> Donald Trump lost the election against Mark Zuckerberg in an election impaired by concerns over social media manipulation. </p><p class='danger-text center bold'>The situation is critical.</p> <p class='center'> Trump tweeted that he will “take America hostage with my big nuclear button rather than give away my seat”. He threatened to use the US nuclear arsenal against any country that would not support him by the inauguration on the 21st of January 2021.</p><p class='center content-section'> To prove that he was not kidding, he annihilated North Korea. In the US, two third of the military joined Trump, but one third has started an open rebellion leaded by Zuckerberg, around the New Orleans.</p>
+			</div>
+		</div>
+	<% else %>
+
+
+		<div class="row justify-content-center content-section">
+			<!-- <div class="col-md-4 center">
+				<%= link_to 'Join a random game', random_path, method: :post, class: 'btn btn-primary controls' %> 
+			</div> -->
+			<div class="col-md-4 center">
+				<%= link_to 'Create a private game', games_path(game: {creator_id: current_user.id, status: "invite_friends"}), 
+					method: :post, class: 'btn btn-primary controls' %>
+			</div>
+		</div>
+
+		<% if !current_user.game_invites.empty? %>
+			<section class="content-section">
+				<h3 class='section-title'>Pending invites</h3>
+
+				<table class="table table-hover" id='pending-invites'>
+					<%= render 'games/templates/pending_invites_table' %>
+				</table>
+			</section>
+		<% end %>
+		<% if !current_user.games.not_finished.empty? %>
+			<section class="content-section">
+				<h3 class='section-title'>Current games</h3>
+
+				<table class="table table-hover" id='current-games'>
+					<%= render 'games/templates/current_games_table' %>
+				</table>
+			</section>
+		<% end %>
+	<% end %>
 </div>

@@ -7,6 +7,9 @@
         <div class="row ">
           <div class="col header">
             <strong>Week <%= @game.turn_number %> </strong>-- Time left: <span id='timer' class='danger-text bold'><%= @player.timer %></span> seconds
+            <script type="text/javascript">
+              startTimer(); 
+            </script>
           </div>
           
         </div>

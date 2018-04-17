@@ -183,6 +183,7 @@ function startTimer() {
 
 	$(window).on('beforeunload', function () {
  		if (!isNaN(timer)) {
+ 			clearInterval(countdown);
  			let timer_update = timer
  			$.ajax({
 		  		type: "POST",
@@ -191,17 +192,22 @@ function startTimer() {
  		};
 	});
 
-	countdown = setInterval(function() { 
+	countdown = setInterval(timerAdvance, 1000);
+	
+	function timerAdvance () {
 		timer -= 1;
 		if (timer <= 0) {
+			clearInterval(countdown);
 			$.ajax({
-		  		type: "PUT",
-		  		url: window.location.href + '?user_action=pass'
+			  	type: "PUT",
+			  	url: window.location.href + '?user_action=pass'
 			});
 		}
 		$('#timer').html(timer);
-	}, 1000);
+	}
 }
+
+
 
 function updateUnread() {
 	let unreadCount = $('.unread').length;
@@ -263,13 +269,13 @@ function populateMap(arrayOfFeatures,map) {
 
 
 	  if (marker.properties.type === 'City' && marker.properties.destroyed) {
-	  	$(el).append('<i class="material-icons location-input destroyed">location_city</i>');
+	  	$(el).append('<i class="material-icons location-input destroyed">account_balance</i>');
 	  } else if (marker.properties.type === 'City' && marker.properties.conquered) {
 	  	$(el).append('<i class="material-icons location-input destroyed">flag</i>');
 	  } else if (marker.properties.type === 'City' && marker.properties.spies) {
 	  	$(el).append('<i class="material-icons location-input disabled">remove_red_eye</i>');
 	  } else if (marker.properties.type === 'City') {
-	  	$(el).append('<i class="material-icons location-input disabled">location_city</i>');
+	  	$(el).append('<i class="material-icons location-input disabled">account_balance</i>');
 	  } else if (marker.properties.type === 'Launch Site' && marker.properties.destroyed) {
 	  	$(el).append('<i class="material-icons location-input destroyed">gps_off</i>');
 	  } else if (marker.properties.type === 'Launch Site') {
@@ -318,7 +324,6 @@ $(document).on('turbolinks:load', function () {
 	bindFormClickListeners();
 	updateUnread();
 	generateMap();
-	startTimer();
 });
 
 
