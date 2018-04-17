@@ -8,7 +8,7 @@
           <div class="col header">
             <strong>Week <%= @game.turn_number %> </strong>-- Time left: <span id='timer' class='danger-text bold'><%= @player.timer %></span> seconds
             <script type="text/javascript">
-              startTimer(); 
+              // startTimer(); 
             </script>
           </div>
           
@@ -99,7 +99,20 @@
     <div class="row">
       <div class="col-md-8">
         <div id='map' >
-        
+          <div class='map-overlay container'>
+            <div class="row align-items-center">
+              <div class="col-2"><i class="material-icons md-18 location-input active">account_balance</i></div>
+              <div class="col-10">City</div>
+            </div>
+            <div class="row align-items-center">
+              <div class="col-2"><i class="material-icons md-18 location-input active">gps_fixed</i></div>
+              <div class="col-10">US Launch Site</div>
+            </div>
+            <div class="row align-items-center">
+              <div class="col-2"><i class="material-icons md-18 location-input destroyed">flag</i></div>
+              <div class="col-10">Conquered by rebels</div>
+            </div>
+          </div>
         </div>
       </div>
       <div class="col-md-4">
