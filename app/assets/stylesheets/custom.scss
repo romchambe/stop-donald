@@ -283,12 +283,19 @@ body {
 	color:$red;
 }
 
+.right-margin-sm {
+	margin-right: 0.5rem;
+}
+
+.right-margin-md {
+	margin-right: 1rem;
+}
+
 // ALERTS --------------------------------------------------------
 
 .alert-notice, .alert-info {
-	background-color: $light-blue; 
+	background-color: rgba(32, 201, 151, 0.5); 
 	color: white;
-	border-color: $light-blue;
 }
 
 

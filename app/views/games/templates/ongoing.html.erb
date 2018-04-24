@@ -1,18 +1,38 @@
+<% if current_user.show_tutorial %>
+  <script type="text/javascript">
+    
+  </script>
+<% end %>
 <div class='container-fluid' id='main-container'>
   <form action=<%= game_path(@game)%> method="post" class='cities-form' id='cities-form'>
     <%= hidden_field_tag :authenticity_token, form_authenticity_token -%>
     <input name="_method" type="hidden" value="patch" />
     <div class="row align-items-center" data-game='<%= @game.id %>' id='game-header'>
       <div class="col-md-4">
-        <div class="row ">
-          <div class="col header">
-            <strong>Week <%= @game.turn_number %> </strong>-- Time left: <span id='timer' class='danger-text bold'><%= @player.timer %></span> seconds
-            <script type="text/javascript">
-              // startTimer(); 
-            </script>
-          </div>
+        <div class="row align-items-center justify-content-center">
+          <div class="col center">
+          <% if @player.country == 'china' %> 
+            <%= image_tag('china.svg', size: '36x36', class: 'right-margin-sm') %>
+          <% elsif @player.country == 'europe' %>
+            <%= image_tag('european-union.svg', size: '36x36', class: 'right-margin-sm') %>
+          <% elsif @player.country == 'russia' %>
+            <%= image_tag('russia.svg', size: '36x36', class: 'right-margin-sm') %>
+          <% end %>
           
+            <strong><%= @player.country.capitalize %></strong>
+          </div>
         </div>
+        <div class="row align-items-baseline justify-content-center">
+          <div class="col header bold center">
+            <span class='bold right-margin-md'>Week <%= @game.turn_number %></span>
+            <span class='bold right-margin-md'>-</span>
+            <span id='timer' class='danger-text bold'><%= @player.timer %></span> seconds left
+          </div>
+          <script type="text/javascript">
+            //startTimer(); 
+          </script>
+        </div>
+      
         <div class="row">
           <div class="col center">
             <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modal-action-selection" id='action-selection'>
