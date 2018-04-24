@@ -1,9 +1,18 @@
 <nav class="navbar navbar-expand-sm ">
-  <%= image_tag("square_banner", height: '48', width: '48', class: 'image-banner') %>
-  <%= link_to 'Stop Donald', root_path, class: "navbar-brand" %>
-  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
-  </button>
+  <div class='custom-navbar-blocks'>
+    <%= image_tag("square_banner", height: '48', width: '48', class: 'image-banner') %>
+    <%= link_to 'Stop Donald', root_path, class: "navbar-brand" %>
+  </div>
+  <% if user_signed_in? && current_user.show_tutorial %>
+    <div class="custom-navbar-blocks center">
+      <button class="btn btn-primary">See tutorial</button>
+    </div>
+  <% end %>
+  <div class="custom-navbar-blocks-sm">
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+  </div>
 
   <div class="collapse navbar-collapse" id="navbarSupportedContent">
     <ul class="navbar-nav">

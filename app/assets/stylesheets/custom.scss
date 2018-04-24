@@ -19,6 +19,12 @@ $breakpoint-phone: 576px;
 				color: $green;
 			}
 		}
+		.navbar-brand {
+			@media only screen and (max-width: $breakpoint-phone) {
+				display:none;
+			}
+
+		}
 		.navbar-collapse {
 			justify-content: flex-end;
 			@media only screen and (max-width: $breakpoint-phone) {
@@ -119,6 +125,20 @@ body {
 	display: flex; 
 	flex-direction: column;
 	justify-content: space-between;
+}
+
+.custom-navbar-blocks {
+	flex-basis: auto;
+	flex-grow:1;
+}
+
+.custom-navbar-blocks-sm {
+	@media only screen and (max-width: $breakpoint-phone) {
+		flex-basis: auto;
+		flex-grow:1;
+		display:flex;
+		justify-content: flex-end;
+	}
 }
 
 .content-section {
