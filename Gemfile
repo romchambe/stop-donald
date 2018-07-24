@@ -34,6 +34,8 @@ gem 'hashids' #generate hashed ids
 gem 'bootstrap', '~> 4.0.0'
 gem "select2-rails"
 gem 'jquery-rails'
+gem 'sprockets', '~>3.7.2'
+
 
 # Delayed jobs => schedule tasks
 gem 'delayed_job_active_record'
