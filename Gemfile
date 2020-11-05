@@ -31,7 +31,7 @@ gem 'bcrypt', '~> 3.1.7'
 gem 'hashids' #generate hashed ids
 
 # Styles
-gem 'bootstrap', '~> 4.0.0'
+gem 'bootstrap', '~> 4.3.1'
 gem "select2-rails"
 gem 'jquery-rails'
 gem 'sprockets', '~>3.7.2'
